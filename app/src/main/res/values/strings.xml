@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">ProtProfile</string>
+    <string name="generic_error">Something went wrong</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="add_new_month">Add New Month</string>"
+    <string name="number">Mobile Number</string>
+    <string name="sign_in">SignIn</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="add_month">Add Month</string>
+    <string name="menu_back">Menu Back</string>
+    <string name="submit">Submit</string>
+    <string name="could_not_find_account">Could not find account</string>
+    <string name="menu_more">More Menu</string>
+    <string name="open_transactions_history">Transactions History</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="history">History</string>
+    <string name="transactions">All Transactions</string>
+    <string name="edit">edit</string>
+    <string name="app_logo">App Logo</string>
+    <string name="add_transaction">Add Transaction</string>
+    <string name="details">Details</string>
+    <string name="edit_details">Edit Details</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="otp">Enter OTP</string>
+    <string name="verify">Verify</string>
+
+
+</resources>

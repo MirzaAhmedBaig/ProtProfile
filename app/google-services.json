@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "555671999700",
+    "project_id": "protprofile",
+    "storage_bucket": "protprofile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555671999700:android:66e58007ebb826e63b1741",
+        "android_client_info": {
+          "package_name": "com.mab.protprofile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsYteuRiGdGrSb8eLR5f6KXps432EVw-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
