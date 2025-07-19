@@ -13,39 +13,40 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
-) : MainViewModel() {
-    private val _authState = MutableStateFlow<AuthStateNew>(AuthStateNew.Idle)
-    val authState: StateFlow<AuthStateNew> = _authState
+class LoginViewModel
+    @Inject
+    constructor(
+        private val authRepository: AuthRepository,
+    ) : MainViewModel() {
+        private val _authState = MutableStateFlow<AuthStateNew>(AuthStateNew.Idle)
+        val authState: StateFlow<AuthStateNew> = _authState
 
-    init {
-        Timber.d("LoginViewModel initialized")
-    }
+        init {
+            Timber.d("LoginViewModel initialized")
+        }
 
-    fun startPhoneNumberVerification(
-        phone: String,
-        activity: Activity,
-        showErrorSnackbar: (ErrorMessage) -> Unit
-    ) {
-        Timber.d("Starting phone number verification for phone: %s", phone)
-        launchCatching(showErrorSnackbar) {
-            authRepository.startPhoneNumberVerification(phone, activity).collect { result ->
-                when (result) {
-                    is Resource.Loading -> _authState.value = AuthStateNew.Loading
-                    is Resource.Success -> {
-                        Timber.i("OTP sent successfully. Verification ID: %s", result.data)
-                        _authState.value = AuthStateNew.CodeSent(result.data)
-                    }
+        fun startPhoneNumberVerification(
+            phone: String,
+            activity: Activity,
+            showErrorSnackbar: (ErrorMessage) -> Unit,
+        ) {
+            Timber.d("Starting phone number verification for phone: %s", phone)
+            launchCatching(showErrorSnackbar) {
+                authRepository.startPhoneNumberVerification(phone, activity).collect { result ->
+                    when (result) {
+                        is Resource.Loading -> _authState.value = AuthStateNew.Loading
+                        is Resource.Success -> {
+                            Timber.i("OTP sent successfully. Verification ID: %s", result.data)
+                            _authState.value = AuthStateNew.CodeSent(result.data)
+                        }
 
-                    is Resource.Error -> {
-                        Timber.e(result.exception, "Error during phone number verification")
-                        _authState.value =
-                            AuthStateNew.Error(result.exception.message ?: "Error")
+                        is Resource.Error -> {
+                            Timber.e(result.exception, "Error during phone number verification")
+                            _authState.value =
+                                AuthStateNew.Error(result.exception.message ?: "Error")
+                        }
                     }
                 }
             }
         }
     }
-
-}

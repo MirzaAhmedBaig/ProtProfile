@@ -31,7 +31,6 @@ vico = "2.1.3"
 spotless = "7.1.0"
 
 
-
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +67,7 @@ google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gs
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -80,6 +80,7 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 spotless = {id = "com.diffplug.spotless", version.ref = "spotless"}
+android-lint = { id = "com.android.lint", version.ref = "agp" }
 
 
 

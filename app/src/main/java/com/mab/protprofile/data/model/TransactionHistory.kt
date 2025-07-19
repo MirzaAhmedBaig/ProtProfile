@@ -10,7 +10,7 @@ data class TransactionHistory(
     val transId: String = "",
     val date: Long = 0L,
     val editedBy: String = "",
-    val changes: TransactionChange = TransactionChange()
+    val changes: TransactionChange = TransactionChange(),
 )
 
 @Serializable

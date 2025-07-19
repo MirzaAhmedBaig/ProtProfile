@@ -15,7 +15,10 @@ import com.patrykandpatrick.vico.core.common.Position
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 
 @Composable
-fun rememberAvgHorizontalLine(avgValue: Double, label: String): HorizontalLine {
+fun rememberAvgHorizontalLine(
+    avgValue: Double,
+    label: String,
+): HorizontalLine {
     val fill = fill(Color(0xfffdc8c4))
     val line = rememberLineComponent(fill = fill, thickness = 2.dp)
     val labelComponent =
@@ -27,7 +30,7 @@ fun rememberAvgHorizontalLine(avgValue: Double, label: String): HorizontalLine {
         )
     return remember {
         HorizontalLine(
-            y = { avgValue},
+            y = { avgValue },
             line = line,
             labelComponent = labelComponent,
             label = { label },

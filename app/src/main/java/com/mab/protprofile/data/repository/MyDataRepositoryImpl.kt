@@ -9,37 +9,31 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MyDataRepositoryImpl @Inject constructor(
-    private val fireStoreDataSource: FireStoreDataSource
-) : MyDataRepository {
-    override suspend fun getTransactions(): List<Transaction> {
-        return fireStoreDataSource.getTransactions()
-    }
+class MyDataRepositoryImpl
+    @Inject
+    constructor(
+        private val fireStoreDataSource: FireStoreDataSource,
+    ) : MyDataRepository {
+        override suspend fun getTransactions(): List<Transaction> = fireStoreDataSource.getTransactions()
 
-    override suspend fun getTransaction(transId: String): Transaction? {
-        return fireStoreDataSource.getTransaction(transId)
-    }
+        override suspend fun getTransaction(transId: String): Transaction? = fireStoreDataSource.getTransaction(transId)
 
-    override suspend fun createTransaction(transaction: Transaction) {
-        fireStoreDataSource.createTransaction(transaction)
-    }
+        override suspend fun createTransaction(transaction: Transaction) {
+            fireStoreDataSource.createTransaction(transaction)
+        }
 
-    override suspend fun updateTransaction(
-        transaction: Transaction,
-        transactionHistory: TransactionHistory
-    ) {
-        fireStoreDataSource.updateTransaction(transaction, transactionHistory)
-    }
+        override suspend fun updateTransaction(
+            transaction: Transaction,
+            transactionHistory: TransactionHistory,
+        ) {
+            fireStoreDataSource.updateTransaction(transaction, transactionHistory)
+        }
 
-    override suspend fun deleteTransaction(transId: String) {
-        fireStoreDataSource.deleteTransaction(transId)
-    }
+        override suspend fun deleteTransaction(transId: String) {
+            fireStoreDataSource.deleteTransaction(transId)
+        }
 
-    override suspend fun getTransactionsHistory(): List<TransactionHistory> {
-        return fireStoreDataSource.getTransactionsHistory()
-    }
+        override suspend fun getTransactionsHistory(): List<TransactionHistory> = fireStoreDataSource.getTransactionsHistory()
 
-    override suspend fun getUserInfo(number: String): UserInfo {
-        return fireStoreDataSource.getUserInfo(number)
+        override suspend fun getUserInfo(number: String): UserInfo = fireStoreDataSource.getUserInfo(number)
     }
-}

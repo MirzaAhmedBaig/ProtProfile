@@ -8,17 +8,6 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
-    alias(libs.plugins.spotless) apply true
-}
-
-spotless {
-    kotlin {
-        target("src/**/*.kt")
-        ktlint()        // Uses ktlint under the hood
-        trimTrailingWhitespace()
-        endWithNewline()
-        // You can add more rules here!
-    }
 }
 
 //./gradlew lint

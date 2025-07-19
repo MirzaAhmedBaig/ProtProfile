@@ -48,10 +48,10 @@ fun ViewEntriesScreen(
     onBack: () -> Unit,
     openEditScreen: (String) -> Unit,
     navBackStackEntry: NavBackStackEntry,
-    viewModel: ViewEntriesModel = hiltViewModel()
+    viewModel: ViewEntriesViewModel = hiltViewModel()
 ) {
     Timber.d("ViewEntriesScreen Composable launched")
-    val allTransactions = viewModel.transaction.collectAsStateWithLifecycle().value ?: transactions
+    val allTransactions = viewModel.transactions.collectAsStateWithLifecycle().value ?: transactions
 
     // Observe refresh flag in SavedStateHandle (navigation result pattern)
     val shouldRefreshFlow = navBackStackEntry.savedStateHandle

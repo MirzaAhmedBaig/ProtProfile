@@ -10,5 +10,5 @@ data class UserInfo(
     val name: String = "",
     val email: String = "",
     val role: UserRole = UserRole.USER,
-    val sharePercent: Float = 0f
+    val sharePercent: Float = 0f,
 )

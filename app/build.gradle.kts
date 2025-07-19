@@ -18,6 +18,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.spotless)
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktlint()
+        trimTrailingWhitespace()
+        endWithNewline()
+        // You can add more rules here!
+    }
 }
 
 android {
@@ -182,4 +193,5 @@ dependencies {
     // AndroidX Test - Hilt testing
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
+    testImplementation(kotlin("test"))
 }

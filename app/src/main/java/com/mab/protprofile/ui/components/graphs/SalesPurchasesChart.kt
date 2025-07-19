@@ -94,4 +94,3 @@ fun SalesPurchasesChart(data: List<Triple<String, Int, Int>>) {
         )
     }
 }
-

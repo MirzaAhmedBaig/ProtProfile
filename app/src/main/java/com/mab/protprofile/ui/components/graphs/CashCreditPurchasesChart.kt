@@ -91,4 +91,3 @@ fun CashCreditPurchasesChart(data: List<Triple<String, Int, Int>>) {
         )
     }
 }
-

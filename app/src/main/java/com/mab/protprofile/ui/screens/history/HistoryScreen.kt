@@ -39,7 +39,7 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     Timber.d("HistoryScreen composable launched")
-    val transactionsHistory by viewModel.transactionHistory.collectAsStateWithLifecycle()
+    val transactionsHistory by viewModel.transactionsHistory.collectAsStateWithLifecycle()
 
     if (transactionsHistory == null) {
         LoadingIndicator()

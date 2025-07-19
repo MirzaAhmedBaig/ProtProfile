@@ -14,46 +14,50 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class OtpVerificationViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val authRepository: AuthRepository
-) : MainViewModel() {
+class OtpVerificationViewModel
+    @Inject
+    constructor(
+        savedStateHandle: SavedStateHandle,
+        private val authRepository: AuthRepository,
+    ) : MainViewModel() {
+        private val _authState = MutableStateFlow<AuthStateNew>(AuthStateNew.Idle)
+        val authState: StateFlow<AuthStateNew> = _authState
 
-    private val _authState = MutableStateFlow<AuthStateNew>(AuthStateNew.Idle)
-    val authState: StateFlow<AuthStateNew> = _authState
+        private val addEntryRoute = savedStateHandle.toRoute<OtpVerificationRoute>()
+        private val verificationId: String = addEntryRoute.verificationId
 
-    private val addEntryRoute = savedStateHandle.toRoute<OtpVerificationRoute>()
-    private val verificationId: String = addEntryRoute.verificationId
+        init {
+            Timber.d("OtpVerificationViewModel initialized")
+        }
 
-    init {
-        Timber.d("OtpVerificationViewModel initialized")
-    }
+        fun verifyOtp(
+            otp: String,
+            showErrorSnackbar: (ErrorMessage) -> Unit,
+        ) {
+            Timber.d("Attempting to verify OTP: %s with verificationId: %s", otp, verificationId)
+            launchCatching(showErrorSnackbar) {
+                authRepository.verifyOtp(verificationId, otp).collect { result ->
+                    when (result) {
+                        is Resource.Loading -> _authState.value = AuthStateNew.Loading
+                        is Resource.Success -> {
+                            Timber.i(
+                                "OTP verification successful for verificationId: %s",
+                                verificationId,
+                            )
+                            _authState.value = AuthStateNew.Verified(result.data)
+                        }
 
-    fun verifyOtp(otp: String, showErrorSnackbar: (ErrorMessage) -> Unit) {
-        Timber.d("Attempting to verify OTP: %s with verificationId: %s", otp, verificationId)
-        launchCatching(showErrorSnackbar) {
-            authRepository.verifyOtp(verificationId, otp).collect { result ->
-                when (result) {
-                    is Resource.Loading -> _authState.value = AuthStateNew.Loading
-                    is Resource.Success -> {
-                        Timber.i(
-                            "OTP verification successful for verificationId: %s",
-                            verificationId
-                        )
-                        _authState.value = AuthStateNew.Verified(result.data)
-                    }
-
-                    is Resource.Error -> {
-                        Timber.e(
-                            result.exception,
-                            "Error during OTP verification for verificationId: %s",
-                            verificationId
-                        )
-                        _authState.value =
-                            AuthStateNew.Error(result.exception.message ?: "Error")
+                        is Resource.Error -> {
+                            Timber.e(
+                                result.exception,
+                                "Error during OTP verification for verificationId: %s",
+                                verificationId,
+                            )
+                            _authState.value =
+                                AuthStateNew.Error(result.exception.message ?: "Error")
+                        }
                     }
                 }
             }
         }
     }
-}

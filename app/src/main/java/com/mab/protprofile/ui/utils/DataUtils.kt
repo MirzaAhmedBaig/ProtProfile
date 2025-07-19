@@ -10,7 +10,6 @@ import java.util.TimeZone
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-
 fun getCurrentDateTimeString(): String {
     val formatString = "dd/MM/yyyy hh:mm a"
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -25,9 +24,7 @@ fun getCurrentDateTimeString(): String {
 }
 
 @OptIn(ExperimentalTime::class)
-fun getCurrentEpoch(): Long {
-    return Clock.System.now().toEpochMilliseconds()
-}
+fun getCurrentEpoch(): Long = Clock.System.now().toEpochMilliseconds()
 
 fun formatDate(epochMillis: Long): String {
     val formatString = "dd/MM/yyyy hh:mm a"
@@ -36,18 +33,19 @@ fun formatDate(epochMillis: Long): String {
     return sdf.format(Date(epochMillis))
 }
 
-fun monthName(month: Int?): String = when (month) {
-    1 -> "Jan"
-    2 -> "Feb"
-    3 -> "Mar"
-    4 -> "Apr"
-    5 -> "May"
-    6 -> "Jun"
-    7 -> "Jul"
-    8 -> "Aug"
-    9 -> "Sep"
-    10 -> "Oct"
-    11 -> "Nov"
-    12 -> "Dec"
-    else -> "?"
-}
+fun monthName(month: Int?): String =
+    when (month) {
+        1 -> "Jan"
+        2 -> "Feb"
+        3 -> "Mar"
+        4 -> "Apr"
+        5 -> "May"
+        6 -> "Jun"
+        7 -> "Jul"
+        8 -> "Aug"
+        9 -> "Sep"
+        10 -> "Oct"
+        11 -> "Nov"
+        12 -> "Dec"
+        else -> "?"
+    }
