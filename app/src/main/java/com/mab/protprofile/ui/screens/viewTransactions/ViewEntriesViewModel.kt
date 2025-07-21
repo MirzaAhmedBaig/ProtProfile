@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.screens.view
+package com.mab.protprofile.ui.screens.viewTransactions
 
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.data.model.Transaction

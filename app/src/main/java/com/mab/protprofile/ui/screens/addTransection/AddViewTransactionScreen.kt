@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.screens.add
+package com.mab.protprofile.ui.screens.addTransection
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,6 +42,7 @@ import com.mab.protprofile.ui.components.CenterTopAppBar
 import com.mab.protprofile.ui.components.ExposedDropdownField
 import com.mab.protprofile.ui.components.LoadingIndicator
 import com.mab.protprofile.ui.components.StandardButton
+import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
 import kotlinx.serialization.Serializable
 import java.util.Calendar
@@ -49,27 +50,27 @@ import timber.log.Timber
 
 
 @Serializable
-data class AddEntryRoute(val transId: String)
+data class AddViewTransactionRoute(val transId: String)
 
 @Composable
-fun AddEntryScreen(
-    onBack: (Boolean) -> Unit,
+fun AddViewTransactionScreen(
+    goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    viewModel: AddEntryViewModel = hiltViewModel()
+    viewModel: AddViewTransactionViewModel = hiltViewModel(),
 ) {
     Timber.d("AddEntryScreen called")
     val navigateToHome by viewModel.navigateToHome.collectAsStateWithLifecycle()
 
     if (navigateToHome.first) {
         Timber.d("Navigating back to home with shouldRefresh: ${navigateToHome.second}")
-        onBack(navigateToHome.second)
+        goto(RouteInfo.OnBack(navigateToHome.second))
     } else {
         Timber.d("Loading AddEntryScreenLoad")
 
         AddEntryScreenLoad(
             viewModel,
             showErrorSnackbar = showErrorSnackbar,
-            onBack = onBack
+            goto = goto,
         )
 
     }
@@ -77,9 +78,9 @@ fun AddEntryScreen(
 
 @Composable
 fun AddEntryScreenLoad(
-    viewModel: AddEntryViewModel,
+    viewModel: AddViewTransactionViewModel,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    onBack: (Boolean) -> Unit
+    goto: (RouteInfo) -> Unit,
 ) {
     Timber.d("AddEntryScreenLoad called")
     val transaction by viewModel.transaction.collectAsStateWithLifecycle()
@@ -94,7 +95,7 @@ fun AddEntryScreenLoad(
             userInfo!!.role,
             showErrorSnackbar = showErrorSnackbar,
             saveTransaction = viewModel::saveTransaction,
-            onBack = onBack
+            goto = goto,
         )
     }
 
@@ -110,13 +111,14 @@ fun AddEntryScreenLoad(
 fun AddEntryScreenContent(
     transaction: Transaction,
     role: UserRole,
-    onBack: (Boolean) -> Unit,
+    goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    saveTransaction: (Transaction, (ErrorMessage) -> Unit) -> Unit
+    saveTransaction: (Transaction, (ErrorMessage) -> Unit) -> Unit,
 ) {
     Timber.d("AddEntryScreenContent called with transaction: $transaction, role: $role")
     val editEnabled = remember { mutableStateOf(transaction.id.isBlank()) }
-    val titleStringId = remember { mutableIntStateOf(if(transaction.id.isBlank()) R.string.add_new_month else R.string.details ) }
+    val titleStringId =
+        remember { mutableIntStateOf(if (transaction.id.isBlank()) R.string.add_new_month else R.string.details) }
     Scaffold(
         topBar = {
             CenterTopAppBar(
@@ -128,17 +130,18 @@ fun AddEntryScreenContent(
                                 Timber.d("Edit button clicked")
                                 editEnabled.value = true
                                 titleStringId.intValue = R.string.edit_details
-                            }, editEnabled.value
+                            },
+                            editEnabled.value,
                         )
                 },
-                onBack = { onBack(false) }
+                onBack = { goto(RouteInfo.OnBack()) },
             )
-        }
+        },
     ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             val editableTransaction = remember { mutableStateOf(transaction) }
 
@@ -164,14 +167,14 @@ fun AddEntryScreenContent(
                         bottom.linkTo(parent.bottom)
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     ExposedDropdownField(
                         label = "Month",
@@ -185,9 +188,9 @@ fun AddEntryScreenContent(
                         },
                         expanded = showMonthMenu,
                         onExpandedChange = { showMonthMenu = it },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
 
-                    )
+                        )
 
                     Spacer(Modifier.size(16.dp))
 
@@ -203,9 +206,9 @@ fun AddEntryScreenContent(
                         },
                         expanded = showYearMenu,
                         onExpandedChange = { showYearMenu = it },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
 
-                    )
+                        )
                 }
 
                 OutlinedTextField(
@@ -222,10 +225,10 @@ fun AddEntryScreenContent(
                     label = { Text("Total Sale") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     ),
                     singleLine = true,
-                    readOnly = !editEnabled.value
+                    readOnly = !editEnabled.value,
                 )
 
                 OutlinedTextField(
@@ -233,7 +236,7 @@ fun AddEntryScreenContent(
                     onValueChange = {
                         editableTransaction.value =
                             editableTransaction.value.copy(
-                                totalPurchase = it.toIntOrNull()
+                                totalPurchase = it.toIntOrNull(),
                             )
                     },
                     isError = editableTransaction.value.totalPurchase?.toString()
@@ -244,10 +247,10 @@ fun AddEntryScreenContent(
                     label = { Text("Total Purchase") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     ),
                     singleLine = true,
-                    readOnly = !editEnabled.value
+                    readOnly = !editEnabled.value,
                 )
 
                 OutlinedTextField(
@@ -255,7 +258,7 @@ fun AddEntryScreenContent(
                     onValueChange = {
                         editableTransaction.value =
                             editableTransaction.value.copy(
-                                creditPurchase = it.toIntOrNull()
+                                creditPurchase = it.toIntOrNull(),
                             )
                     },
                     isError = editableTransaction.value.creditPurchase?.toString()
@@ -266,10 +269,10 @@ fun AddEntryScreenContent(
                     label = { Text("Credit Purchase") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     ),
                     singleLine = true,
-                    readOnly = !editEnabled.value
+                    readOnly = !editEnabled.value,
                 )
 
                 OutlinedTextField(
@@ -277,7 +280,7 @@ fun AddEntryScreenContent(
                     onValueChange = {
                         editableTransaction.value =
                             editableTransaction.value.copy(
-                                totalExpense = it.toIntOrNull()
+                                totalExpense = it.toIntOrNull(),
                             )
                     },
                     isError = editableTransaction.value.totalExpense?.toString()
@@ -288,10 +291,10 @@ fun AddEntryScreenContent(
                     label = { Text("Total Expense") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     ),
                     singleLine = true,
-                    readOnly = !editEnabled.value
+                    readOnly = !editEnabled.value,
                 )
 
                 OutlinedTextField(
@@ -308,7 +311,7 @@ fun AddEntryScreenContent(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text("Total Profit") },
                     singleLine = true,
-                    readOnly = !editEnabled.value
+                    readOnly = !editEnabled.value,
                 )
 
                 Spacer(Modifier.size(16.dp))
@@ -350,7 +353,7 @@ fun GetToBarMenu(onClick: () -> Unit, editEnabled: Boolean) {
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = Icons.Filled.Edit,
-                contentDescription = stringResource(R.string.edit)
+                contentDescription = stringResource(R.string.edit),
             )
         }
     }
@@ -362,10 +365,10 @@ fun AddEntryScreenPreview() {
     ProtProfileTheme(darkTheme = true) {
         AddEntryScreenContent(
             Transaction(),
-            onBack = {},
+            goto = {},
             role = UserRole.ADMIN,
             showErrorSnackbar = {},
-            saveTransaction = { _, _ -> }
+            saveTransaction = { _, _ -> },
         )
     }
 }

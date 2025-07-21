@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.screens.history
+package com.mab.protprofile.ui.screens.transactionsHistory
 
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.data.model.TransactionHistory

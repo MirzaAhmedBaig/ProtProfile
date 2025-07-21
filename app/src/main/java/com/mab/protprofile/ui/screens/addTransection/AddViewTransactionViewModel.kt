@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.screens.add
+package com.mab.protprofile.ui.screens.addTransection
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
@@ -21,7 +21,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEntryViewModel
+class AddViewTransactionViewModel
     @Inject
     constructor(
         savedStateHandle: SavedStateHandle,
@@ -44,7 +44,7 @@ class AddEntryViewModel
         val userInfo: StateFlow<UserInfo?>
             get() = _userInfo.asStateFlow()
 
-        private val addEntryRoute = savedStateHandle.toRoute<AddEntryRoute>()
+        private val addEntryRoute = savedStateHandle.toRoute<AddViewTransactionRoute>()
         private val transId: String = addEntryRoute.transId
 
         private val _transaction = MutableStateFlow<Transaction?>(null)

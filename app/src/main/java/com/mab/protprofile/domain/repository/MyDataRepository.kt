@@ -1,5 +1,8 @@
 package com.mab.protprofile.domain.repository
 
+import com.mab.protprofile.data.model.AppConfigs
+import com.mab.protprofile.data.model.Expense
+import com.mab.protprofile.data.model.InvestmentSummary
 import com.mab.protprofile.data.model.Transaction
 import com.mab.protprofile.data.model.TransactionHistory
 import com.mab.protprofile.data.model.UserInfo
@@ -21,4 +24,12 @@ interface MyDataRepository {
     suspend fun getTransactionsHistory(): List<TransactionHistory>
 
     suspend fun getUserInfo(number: String): UserInfo
+
+    suspend fun getAppConfigs(): AppConfigs
+
+    suspend fun getInvestmentSummary(): InvestmentSummary
+
+    suspend fun getExpenses(): List<Expense>
+
+    suspend fun getExpense(expenseId: String): Expense?
 }

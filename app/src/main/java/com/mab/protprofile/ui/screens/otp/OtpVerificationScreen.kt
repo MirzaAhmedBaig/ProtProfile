@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.otp
+package com.mab.protprofile.ui.screens.otp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -45,6 +45,7 @@ import com.mab.protprofile.R
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.ui.components.StandardButton
 import com.mab.protprofile.ui.data.AuthStateNew
+import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
 import kotlinx.serialization.Serializable
 import timber.log.Timber
@@ -56,8 +57,8 @@ data class OtpVerificationRoute(val verificationId: String)
 @Composable
 fun OtpVerificationScreen(
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    onVerified: () -> Unit,
-    viewModel: OtpVerificationViewModel = hiltViewModel()
+    goto: (RouteInfo) -> Unit,
+    viewModel: OtpVerificationViewModel = hiltViewModel(),
 ) {
     Timber.d("OtpVerificationScreen composable called")
     var otp by remember { mutableStateOf("") }
@@ -70,18 +71,20 @@ fun OtpVerificationScreen(
     Timber.d("Initial authState: $authState")
 
     Scaffold(
-        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     Timber.d("Pointer input detected, clearing focus.")
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        },
+                    )
                 }
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
             val (form) = createRefs()
 
@@ -100,12 +103,12 @@ fun OtpVerificationScreen(
                         height = Dimension.fillToConstraints
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Image(
                     modifier = Modifier.size(88.dp),
                     painter = painterResource(id = R.drawable.app_logo),
-                    contentDescription = stringResource(R.string.app_logo)
+                    contentDescription = stringResource(R.string.app_logo),
                 )
 
                 OutlinedTextField(
@@ -117,7 +120,7 @@ fun OtpVerificationScreen(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                     onValueChange = {
                         Timber.d("OTP value changed: $it")
@@ -125,7 +128,7 @@ fun OtpVerificationScreen(
                             otp = it
                         }
                     },
-                    label = { Text(stringResource(R.string.otp)) }
+                    label = { Text(stringResource(R.string.otp)) },
                 )
 
                 Spacer(Modifier.size(24.dp))
@@ -138,7 +141,7 @@ fun OtpVerificationScreen(
 
                     is AuthStateNew.Verified -> {
                         Timber.i("OTP Verified, navigating.")
-                        LaunchedEffect(Unit) { onVerified() }
+                        LaunchedEffect(Unit) { goto(RouteInfo.Home) }
                     }
 
                     else -> {
@@ -160,7 +163,7 @@ fun OtpVerificationScreen(
                                     return@StandardButton
                                 }
                                 viewModel.verifyOtp(otp, showErrorSnackbar)
-                            }
+                            },
                         )
                     }
                 }
@@ -177,8 +180,8 @@ fun LoginScreenPreview() {
     ProtProfileTheme {
         Surface {
             OtpVerificationScreen(
-                onVerified = {},
-                showErrorSnackbar = {}
+                goto = {},
+                showErrorSnackbar = {},
             )
         }
 

@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.screens.view
+package com.mab.protprofile.ui.screens.viewTransactions
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,10 +28,11 @@ import androidx.navigation.NavBackStackEntry
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.ui.Constants
 import com.mab.protprofile.ui.components.TransactionItem
+import com.mab.protprofile.ui.navigation.RouteInfo
 import timber.log.Timber
 
 @Serializable
-object ViewEntriesRoute {
+object ViewTransactionsRoute {
     const val SCREEN = "view_entries"
     const val TRANSACTION_ARG = "transactionsJson"
     const val DESTINATION = "$SCREEN/{$TRANSACTION_ARG}"
@@ -42,13 +43,12 @@ object ViewEntriesRoute {
 }
 
 @Composable
-fun ViewEntriesScreen(
+fun ViewTransactionsScreen(
     transactions: List<Transaction>,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    onBack: () -> Unit,
-    openEditScreen: (String) -> Unit,
+    goto: (RouteInfo) -> Unit,
     navBackStackEntry: NavBackStackEntry,
-    viewModel: ViewEntriesViewModel = hiltViewModel()
+    viewModel: ViewEntriesViewModel = hiltViewModel(),
 ) {
     Timber.d("ViewEntriesScreen Composable launched")
     val allTransactions = viewModel.transactions.collectAsStateWithLifecycle().value ?: transactions
@@ -69,8 +69,7 @@ fun ViewEntriesScreen(
 
     ViewEntriesScreenContent(
         transactions = allTransactions,
-        onBack = onBack,
-        openEditScreen = openEditScreen
+        goto = goto,
     )
 }
 
@@ -79,16 +78,17 @@ fun ViewEntriesScreen(
 @Composable
 fun ViewEntriesScreenContent(
     transactions: List<Transaction>,
-    onBack: () -> Unit,
-    openEditScreen: (String) -> Unit
+    goto: (RouteInfo) -> Unit,
 ) {
     Timber.d("ViewEntriesScreenContent Composable launched")
-    Scaffold(topBar = {
-        CenterTopAppBar(
-            title = stringResource(R.string.transactions),
-            onBack = onBack
-        )
-    }) { innerPadding ->
+    Scaffold(
+        topBar = {
+            CenterTopAppBar(
+                title = stringResource(R.string.transactions),
+                onBack = { goto(RouteInfo.OnBack()) },
+            )
+        },
+    ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,8 +96,8 @@ fun ViewEntriesScreenContent(
                     top = innerPadding.calculateTopPadding(),
                     start = 4.dp,
                     end = 4.dp,
-                    bottom = 4.dp
-                )
+                    bottom = 4.dp,
+                ),
         ) {
             val (list) = createRefs()
             LazyColumn(
@@ -112,7 +112,10 @@ fun ViewEntriesScreenContent(
                     },
             ) {
                 items(transactions) { transaction ->
-                    TransactionItem(transaction, onEdit = openEditScreen)
+                    TransactionItem(
+                        transaction,
+                        onEdit = { goto(RouteInfo.AddViewTransaction(it)) },
+                    )
                 }
             }
 
@@ -128,8 +131,7 @@ fun ViewEntriesScreenPreview() {
         Surface {
             ViewEntriesScreenContent(
                 transactions = emptyList(),
-                onBack = {},
-                openEditScreen = {}
+                goto = {},
             )
         }
 

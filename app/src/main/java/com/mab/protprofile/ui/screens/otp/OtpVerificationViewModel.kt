@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.otp
+package com.mab.protprofile.ui.screens.otp
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute

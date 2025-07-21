@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.emaillogin
+package com.mab.protprofile.ui.screens.emaillogin
 
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.domain.repository.AuthRepository

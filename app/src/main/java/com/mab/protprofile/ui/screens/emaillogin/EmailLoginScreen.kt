@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.emaillogin
+package com.mab.protprofile.ui.screens.emaillogin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mab.protprofile.R
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.ui.components.StandardButton
+import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
 import kotlinx.serialization.Serializable
 import timber.log.Timber
@@ -46,7 +47,7 @@ object EmailLoginRoute
 
 @Composable
 fun EmailLoginScreen(
-    openHomeScreen: () -> Unit,
+    goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
     viewModel: EmailLoginViewModel = hiltViewModel()
 ) {
@@ -54,7 +55,7 @@ fun EmailLoginScreen(
     val shouldRestartApp by viewModel.shouldRestartApp.collectAsStateWithLifecycle()
 
     if (shouldRestartApp) {
-        openHomeScreen()
+        goto(RouteInfo.Home)
     } else {
         LoginScreenContent(
             signIn = viewModel::signIn,

@@ -44,6 +44,7 @@ import com.mab.protprofile.ui.components.graphs.NetProfitCard
 import com.mab.protprofile.ui.components.graphs.NetProfitTrendChart
 import com.mab.protprofile.ui.components.graphs.SalesPurchasesChart
 import com.mab.protprofile.ui.data.FinanceData
+import com.mab.protprofile.ui.navigation.RouteInfo
 import timber.log.Timber
 
 
@@ -52,26 +53,21 @@ object HomeRoute
 
 @Composable
 fun HomeScreen(
-    openAddItemScreen: (String) -> Unit,
-    openSignInScreen: () -> Unit,
-    openTransactionsScreen: (List<Transaction>) -> Unit,
-    openTransactionsHistoryScreen: () -> Unit,
+    goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     Timber.d("HomeScreen initiated")
     val shouldRestartApp by viewModel.shouldRestartApp.collectAsStateWithLifecycle()
 
     if (shouldRestartApp) {
-        openSignInScreen()
+        goto(RouteInfo.Login)
     } else {
         HomeScreenLoad(
             viewModel = viewModel,
-            openAddItemScreen = openAddItemScreen,
             loadTransactions = viewModel::fetchAllTransactions,
             showErrorSnackbar = showErrorSnackbar,
-            openTransactionsScreen = openTransactionsScreen,
-            openTransactionsHistoryScreen = openTransactionsHistoryScreen
+            goto = goto,
         )
     }
 }
@@ -81,9 +77,7 @@ fun HomeScreenLoad(
     viewModel: HomeViewModel,
     showErrorSnackbar: (ErrorMessage) -> Unit,
     loadTransactions: ((ErrorMessage) -> Unit) -> Unit,
-    openAddItemScreen: (String) -> Unit,
-    openTransactionsScreen: (List<Transaction>) -> Unit,
-    openTransactionsHistoryScreen: () -> Unit,
+    goto: (RouteInfo) -> Unit,
 ) {
     val transactions by viewModel.transactions.collectAsStateWithLifecycle()
     val financeData by viewModel.financeData.collectAsStateWithLifecycle()
@@ -96,11 +90,8 @@ fun HomeScreenLoad(
             transactions = transactions!!,
             financeData = financeData,
             userInfo = userInfo!!,
-            signOut = viewModel::signOut,
-            openAddItemScreen = openAddItemScreen,
-            showErrorSnackbar = showErrorSnackbar,
-            openTransactionsScreen = openTransactionsScreen,
-            openTransactionsHistoryScreen = openTransactionsHistoryScreen
+            signOut = { viewModel.signOut(showErrorSnackbar) },
+            goto = goto,
         )
     }
     LaunchedEffect(true) {
@@ -116,11 +107,8 @@ fun HomeScreenContent(
     transactions: List<Transaction>,
     financeData: FinanceData?,
     userInfo: UserInfo,
-    showErrorSnackbar: (ErrorMessage) -> Unit,
-    signOut: ((ErrorMessage) -> Unit) -> Unit = {},
-    openAddItemScreen: (String) -> Unit,
-    openTransactionsScreen: (List<Transaction>) -> Unit,
-    openTransactionsHistoryScreen: () -> Unit,
+    signOut: () -> Unit,
+    goto: (RouteInfo) -> Unit,
 ) {
     Timber.d("HomeScreenContent: Rendering with transactions count=${transactions.count()}")
     Scaffold(
@@ -131,19 +119,17 @@ fun HomeScreenContent(
                     MoreTasksMenu(
                         transactions = transactions,
                         userInfo.role,
-                        openAddItemScreen = openAddItemScreen,
-                        openTransactionsScreen = openTransactionsScreen,
-                        openTransactionsHistoryScreen = openTransactionsHistoryScreen,
-                        signOut = { signOut(showErrorSnackbar) }
+                        goto = goto,
+                        signOut = signOut,
                     )
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
 
             val (body, noData) = createRefs()
@@ -157,7 +143,7 @@ fun HomeScreenContent(
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
+                    },
                 )
             } else {
                 AnalyticsScreen(
@@ -169,7 +155,7 @@ fun HomeScreenContent(
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             height = Dimension.fillToConstraints
-                        }
+                        },
                 )
             }
         }
@@ -181,36 +167,51 @@ fun HomeScreenContent(
 private fun MoreTasksMenu(
     transactions: List<Transaction>,
     role: UserRole,
-    openAddItemScreen: (String) -> Unit,
-    openTransactionsScreen: (List<Transaction>) -> Unit,
-    openTransactionsHistoryScreen: () -> Unit,
-    signOut: () -> Unit
+    goto: (RouteInfo) -> Unit,
+    signOut: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_more))
-        }
+        },
     ) { closeMenu ->
         if (role == UserRole.ADMIN) {
             DropdownMenuItem(
+                text = { Text(text = stringResource(id = R.string.investment_summary)) },
+                onClick = { goto(RouteInfo.InvestmentSummary); closeMenu() },
+            )
+            DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.add_transaction)) },
-                onClick = { openAddItemScreen(""); closeMenu() }
+                onClick = { goto(RouteInfo.AddViewTransaction("")); closeMenu() },
             )
         }
         if (transactions.isNotEmpty())
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.transactions)) },
-                onClick = { openTransactionsScreen(transactions); closeMenu() }
+                onClick = { goto(RouteInfo.ViewTransactions(transactions)); closeMenu() },
             )
         if (role == UserRole.ADMIN && transactions.isNotEmpty()) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.open_transactions_history)) },
-                onClick = { openTransactionsHistoryScreen(); closeMenu() }
+                onClick = { goto(RouteInfo.TransactionsHistory); closeMenu() },
+            )
+        }
+
+        if (role == UserRole.ADMIN) {
+            DropdownMenuItem(
+                text = { Text(text = stringResource(id = R.string.add_expenses)) },
+                onClick = { signOut(); closeMenu() },
+            )
+        }
+        if (transactions.isNotEmpty()) {
+            DropdownMenuItem(
+                text = { Text(text = stringResource(id = R.string.view_expenses)) },
+                onClick = { signOut(); closeMenu() },
             )
         }
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.sign_out)) },
-            onClick = { signOut(); closeMenu() }
+            onClick = { signOut(); closeMenu() },
         )
     }
 }
@@ -218,12 +219,12 @@ private fun MoreTasksMenu(
 @Composable
 fun AnalyticsScreen(
     financeData: FinanceData,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
 
         // Net Profit Summary

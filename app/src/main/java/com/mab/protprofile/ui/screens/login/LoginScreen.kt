@@ -47,6 +47,7 @@ import com.mab.protprofile.R
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.ui.components.StandardButton
 import com.mab.protprofile.ui.data.AuthStateNew
+import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
 import kotlinx.serialization.Serializable
 import timber.log.Timber
@@ -58,12 +59,11 @@ object LoginRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onCodeSent: (String) -> Unit,
-    onVerified: () -> Unit,
+    goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 
-) {
+    ) {
     Timber.d("LoginScreenContent recomposed")
     val context = LocalContext.current
     val authState by viewModel.authState.collectAsState()
@@ -73,17 +73,19 @@ fun LoginScreen(
     val focusRequester = remember { FocusRequester() }
 
     Scaffold(
-        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        },
+                    )
                 }
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
             val (form) = createRefs()
 
@@ -101,12 +103,12 @@ fun LoginScreen(
                         height = Dimension.fillToConstraints
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Image(
                     modifier = Modifier.size(88.dp),
                     painter = painterResource(id = R.drawable.app_logo),
-                    contentDescription = stringResource(R.string.app_logo)
+                    contentDescription = stringResource(R.string.app_logo),
                 )
 
                 OutlinedTextField(
@@ -119,14 +121,14 @@ fun LoginScreen(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                     onValueChange = {
                         if (it.length <= 10) {
                             number = it
                         }
                     },
-                    label = { Text(stringResource(R.string.phone_number)) }
+                    label = { Text(stringResource(R.string.phone_number)) },
                 )
 
                 Spacer(Modifier.size(24.dp))
@@ -135,11 +137,17 @@ fun LoginScreen(
                     is AuthStateNew.Loading -> CircularProgressIndicator()
                     is AuthStateNew.CodeSent -> {
                         val verificationId = (authState as AuthStateNew.CodeSent).verificationId
-                        LaunchedEffect(verificationId) { onCodeSent(verificationId) }
+                        LaunchedEffect(verificationId) {
+                            goto(
+                                RouteInfo.OtpVerification(
+                                    verificationId,
+                                ),
+                            )
+                        }
                     }
 
                     is AuthStateNew.Verified -> {
-                        LaunchedEffect(Unit) { onVerified() }
+                        LaunchedEffect(Unit) { goto(RouteInfo.Home) }
                     }
 
                     else -> {
@@ -163,10 +171,10 @@ fun LoginScreen(
                                     viewModel.startPhoneNumberVerification(
                                         "+91$number",
                                         context,
-                                        showErrorSnackbar
+                                        showErrorSnackbar,
                                     )
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -183,9 +191,8 @@ fun LoginScreenPreview() {
     ProtProfileTheme {
         Surface {
             LoginScreen(
-                onCodeSent = { },
-                onVerified = {},
-                showErrorSnackbar = {}
+                goto = { },
+                showErrorSnackbar = {},
             )
         }
 

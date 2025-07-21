@@ -1,4 +1,4 @@
-package com.mab.protprofile.ui.screens.history
+package com.mab.protprofile.ui.screens.transactionsHistory
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +25,7 @@ import com.mab.protprofile.data.model.TransactionHistory
 import com.mab.protprofile.ui.components.CenterTopAppBar
 import com.mab.protprofile.ui.components.LoadingIndicator
 import com.mab.protprofile.ui.components.TransactionHistoryItem
+import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
 import timber.log.Timber
 import kotlinx.serialization.Serializable
@@ -34,7 +35,7 @@ object HistoryRoute
 
 @Composable
 fun HistoryScreen(
-    onBack: () -> Unit,
+    goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
@@ -45,7 +46,7 @@ fun HistoryScreen(
         LoadingIndicator()
     } else {
         HistoryScreenContent(
-            onBack = onBack,
+            goto = goto,
             transactionsHistory = transactionsHistory!!
         )
     }
@@ -59,15 +60,17 @@ fun HistoryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreenContent(
-    onBack: () -> Unit,
+    goto: (RouteInfo) -> Unit,
     transactionsHistory: Map<String, List<TransactionHistory>>
 ) {
-    Scaffold(topBar = {
-        CenterTopAppBar(
-            title = stringResource(R.string.history),
-            onBack = onBack
-        )
-    }) { innerPadding ->
+    Scaffold(
+        topBar = {
+            CenterTopAppBar(
+                title = stringResource(R.string.history),
+                onBack = { goto(RouteInfo.OnBack()) },
+            )
+        },
+    ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
@@ -118,7 +121,7 @@ fun HistoryScreenContent(
 fun HistoryScreenPreview() {
     ProtProfileTheme(darkTheme = true) {
         HistoryScreenContent(
-            onBack = {},
+            goto = {},
             transactionsHistory = mapOf()
         )
     }
