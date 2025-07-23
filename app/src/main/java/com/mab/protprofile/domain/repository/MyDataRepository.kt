@@ -25,6 +25,8 @@ interface MyDataRepository {
 
     suspend fun getUserInfo(number: String): UserInfo
 
+    suspend fun getUsers(): List<UserInfo>
+
     suspend fun getAppConfigs(): AppConfigs
 
     suspend fun getInvestmentSummary(): InvestmentSummary
@@ -32,4 +34,8 @@ interface MyDataRepository {
     suspend fun getExpenses(): List<Expense>
 
     suspend fun getExpense(expenseId: String): Expense?
+
+    suspend fun createExpense(expense: Expense)
+
+    suspend fun updateExpense(expense: Expense)
 }

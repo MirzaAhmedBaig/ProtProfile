@@ -118,6 +118,7 @@ fun HomeScreenContent(
                 actions = {
                     MoreTasksMenu(
                         transactions = transactions,
+                        totalProfit = financeData?.netProfitTillDate ?: 0,
                         userInfo.role,
                         goto = goto,
                         signOut = signOut,
@@ -166,6 +167,7 @@ fun HomeScreenContent(
 @Composable
 private fun MoreTasksMenu(
     transactions: List<Transaction>,
+    totalProfit: Int,
     role: UserRole,
     goto: (RouteInfo) -> Unit,
     signOut: () -> Unit,
@@ -178,7 +180,7 @@ private fun MoreTasksMenu(
         if (role == UserRole.ADMIN) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.investment_summary)) },
-                onClick = { goto(RouteInfo.InvestmentSummary); closeMenu() },
+                onClick = { goto(RouteInfo.InvestmentSummary(totalProfit)); closeMenu() },
             )
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.add_transaction)) },
@@ -200,13 +202,13 @@ private fun MoreTasksMenu(
         if (role == UserRole.ADMIN) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.add_expenses)) },
-                onClick = { signOut(); closeMenu() },
+                onClick = { goto(RouteInfo.AddViewExpense("")); closeMenu() },
             )
         }
         if (transactions.isNotEmpty()) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.view_expenses)) },
-                onClick = { signOut(); closeMenu() },
+                onClick = { goto(RouteInfo.ViewExpenses); closeMenu() },
             )
         }
         DropdownMenuItem(

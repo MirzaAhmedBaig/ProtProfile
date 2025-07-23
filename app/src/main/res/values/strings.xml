@@ -27,6 +27,7 @@
     <string name="investment_summary">Investment Summary</string>
     <string name="add_expenses">Add Expenses</string>
     <string name="view_expenses">View Expenses</string>
+    <string name="expenses">Expenses</string>
 
 
 </resources>

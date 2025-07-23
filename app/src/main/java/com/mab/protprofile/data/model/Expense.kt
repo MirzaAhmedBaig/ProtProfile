@@ -6,7 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Expense(
     @DocumentId
-    val date: String = "",
+    val id: String = "",
+    val expenseMonth: Int? = null,
+    val expenseYear: Int? = null,
     val expenses: Map<String, Int> = mapOf(),
-    val notes: String = "",
+    val updatedAt: String = "",
+    val updatedBy: String = "",
+    val notes: String? = null,
 )

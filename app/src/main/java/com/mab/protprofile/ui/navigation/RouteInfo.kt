@@ -12,6 +12,6 @@ sealed class RouteInfo {
     data class AddViewExpense(val expenseId: String) : RouteInfo()
     object ViewExpenses : RouteInfo()
     object TransactionsHistory : RouteInfo()
-    object InvestmentSummary : RouteInfo()
+    data class InvestmentSummary(val totalProfit: Int) : RouteInfo()
     data class OnBack(val shouldRefresh: Boolean = false) : RouteInfo()
 }

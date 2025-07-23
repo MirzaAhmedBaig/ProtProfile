@@ -40,6 +40,8 @@ constructor(
     override suspend fun getUserInfo(number: String): UserInfo =
         fireStoreDataSource.getUserInfo(number)
 
+    override suspend fun getUsers(): List<UserInfo> = fireStoreDataSource.getUsers()
+
     override suspend fun getAppConfigs(): AppConfigs = fireStoreDataSource.getAppConfigs()
 
     override suspend fun getInvestmentSummary(): InvestmentSummary =
@@ -49,4 +51,10 @@ constructor(
 
     override suspend fun getExpense(expenseId: String): Expense? =
         fireStoreDataSource.getExpense(expenseId)
+
+    override suspend fun createExpense(expense: Expense) =
+        fireStoreDataSource.createExpense(expense)
+
+    override suspend fun updateExpense(expense: Expense) =
+        fireStoreDataSource.updateExpense(expense)
 }

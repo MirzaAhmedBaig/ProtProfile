@@ -7,20 +7,5 @@ import kotlinx.serialization.Serializable
 data class AppConfigs(
     @DocumentId
     val id: String = "",
-    val expenseTypes: Array<String> = arrayOf(),
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as AppConfigs
-
-        if (!expenseTypes.contentEquals(other.expenseTypes)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return expenseTypes.contentHashCode()
-    }
-}
+    val expenseTypes: List<String> = listOf(),
+)

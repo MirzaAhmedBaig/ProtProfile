@@ -134,6 +134,21 @@ constructor(
         }
     }
 
+    suspend fun getUsers(): List<UserInfo> {
+        Timber.d("Fetching all users")
+        return try {
+            firestore
+                .collection(USER_INFO)
+                .get()
+                .await()
+                ?.toObjects<UserInfo>()
+                ?: emptyList<UserInfo>().also { Timber.w("No transaction history found, returning empty list.") }
+        } catch (e: Exception) {
+            Timber.e(e, "Error fetching all users")
+            throw e
+        }
+    }
+
     suspend fun getAppConfigs(): AppConfigs {
         Timber.d("Fetching app configs")
         return try {
@@ -192,13 +207,51 @@ constructor(
         }
     }
 
+    suspend fun createExpense(expense: Expense) {
+        Timber.d("Attempting to create expense with id: ${expense.id}")
+        val expenseId = expense.id
+        try {
+            getExpense(expenseId)?.let {
+                Timber.w("Expense with id: $expenseId already exists.")
+                throw IdAlreadyExistsException(expenseId)
+            }
+            firestore
+                .collection(EXPENSES)
+                .document(expense.id)
+                .set(expense)
+                .await()
+            Timber.i("Expense with id: ${expense.id} created successfully.")
+        } catch (e: IdAlreadyExistsException) {
+            throw e
+        } catch (e: Exception) {
+            Timber.e(e, "Error creating expense with id: ${expense.id}")
+            throw e
+        }
+    }
+
+    suspend fun updateExpense(expense: Expense) {
+        Timber.d("Updating expense with id: ${expense.id}")
+        try {
+            firestore
+                .collection(EXPENSES)
+                .document(expense.id)
+                .set(expense)
+                .await()
+            Timber.i("Expense with id: ${expense.id} updated successfully.")
+        } catch (e: Exception) {
+            Timber.e(e, "Error updating expense with id: ${expense.id}")
+        }
+    }
+
     companion object {
         private const val TRANSACTIONS_COLLECTION = "transactions-${BuildConfig.BUILD_TYPE}"
         private const val TRANSACTIONS_HISTORY_COLLECTION =
             "transactions-history-${BuildConfig.BUILD_TYPE}"
+        private const val EXPENSES = "expenses-${BuildConfig.BUILD_TYPE}"
+
+        // Universal
         private const val USER_INFO = "user-info"
         private const val APP_CONFIGS = "app-configs"
-        private const val EXPENSES = "expenses"
-        private const val INVESTMENT_SUMMARY = "investment-summary"
+        private const val INVESTMENT_SUMMARY = "investment_summary"
     }
 }

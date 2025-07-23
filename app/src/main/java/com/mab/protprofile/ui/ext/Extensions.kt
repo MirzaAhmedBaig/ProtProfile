@@ -21,3 +21,7 @@ fun NavHostController.refresh() {
         ?.savedStateHandle
         ?.set(Constants.SHOULD_REFRESH_KEY, true)
 }
+
+fun String.capitalizeWords(): String =
+    this.split(" ")
+        .joinToString(" ") { it.replaceFirstChar { c -> c.uppercaseChar() } }

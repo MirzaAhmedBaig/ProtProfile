@@ -23,13 +23,19 @@ import com.mab.protprofile.data.model.Transaction
 import com.mab.protprofile.ui.Constants
 import com.mab.protprofile.ui.ext.getCustomArg
 import com.mab.protprofile.ui.ext.refresh
+import com.mab.protprofile.ui.screens.addExpense.AddViewExpenseRoute
+import com.mab.protprofile.ui.screens.addExpense.AddViewExpenseScreen
 import com.mab.protprofile.ui.screens.emaillogin.EmailLoginRoute
 import com.mab.protprofile.ui.screens.emaillogin.EmailLoginScreen
+import com.mab.protprofile.ui.screens.investments.InvestmentSummaryRoute
+import com.mab.protprofile.ui.screens.investments.InvestmentSummaryScreen
 import com.mab.protprofile.ui.screens.transactionsHistory.HistoryRoute
 import com.mab.protprofile.ui.screens.transactionsHistory.HistoryScreen
 import com.mab.protprofile.ui.screens.login.LoginScreen
 import com.mab.protprofile.ui.screens.otp.OtpVerificationRoute
 import com.mab.protprofile.ui.screens.otp.OtpVerificationScreen
+import com.mab.protprofile.ui.screens.viewExpenses.ViewExpensesRoute
+import com.mab.protprofile.ui.screens.viewExpenses.ViewExpensesScreen
 import com.mab.protprofile.ui.screens.viewTransactions.ViewTransactionsRoute
 import com.mab.protprofile.ui.screens.viewTransactions.ViewTransactionsScreen
 import java.net.URLDecoder
@@ -76,10 +82,12 @@ fun AppNavGraph(
                 },
             ),
         ) { backStackEntry ->
-            val transactions = backStackEntry.getCustomArg<List<Transaction>>(ViewTransactionsRoute.TRANSACTION_ARG)?: run {
-                Timber.w("ViewEntriesRoute: transactionsJson is null, defaulting to empty list")
-                emptyList()
-            }
+            val transactions =
+                backStackEntry.getCustomArg<List<Transaction>>(ViewTransactionsRoute.TRANSACTION_ARG)
+                    ?: run {
+                        Timber.w("ViewEntriesRoute: transactionsJson is null, defaulting to empty list")
+                        emptyList()
+                    }
             ViewTransactionsScreen(
                 transactions = transactions,
                 goto = { gotoRoute(it, navController = navController) },
@@ -108,6 +116,28 @@ fun AppNavGraph(
             HistoryScreen(
                 goto = { gotoRoute(it, navController = navController) },
                 showErrorSnackbar = showErrorSnackbar,
+            )
+        }
+
+        composable<InvestmentSummaryRoute> {
+            InvestmentSummaryScreen(
+                goto = { gotoRoute(it, navController = navController) },
+                showErrorSnackbar = showErrorSnackbar,
+            )
+        }
+
+        composable<ViewExpensesRoute> { backStackEntry ->
+            ViewExpensesScreen(
+                showErrorSnackbar = showErrorSnackbar,
+                goto = { gotoRoute(it, navController = navController) },
+                navBackStackEntry = backStackEntry,
+            )
+        }
+
+        composable<AddViewExpenseRoute> { backStackEntry ->
+            AddViewExpenseScreen(
+                showErrorSnackbar = showErrorSnackbar,
+                goto = { gotoRoute(it, navController = navController) },
             )
         }
     }
@@ -153,11 +183,17 @@ fun gotoRoute(route: RouteInfo, navController: NavHostController) {
             navController.navigate(ViewTransactionsRoute.createRoute(transactionsJson))
         }
 
-        is RouteInfo.AddViewExpense -> TODO()
+        is RouteInfo.AddViewExpense -> {
+            navController.navigate(AddViewExpenseRoute(route.expenseId))
+        }
 
-        is RouteInfo.ViewExpenses -> TODO()
+        is RouteInfo.ViewExpenses -> {
+            navController.navigate(ViewExpensesRoute)
+        }
 
-        is RouteInfo.InvestmentSummary -> TODO()
+        is RouteInfo.InvestmentSummary -> {
+            navController.navigate(InvestmentSummaryRoute(route.totalProfit))
+        }
 
         is RouteInfo.TransactionsHistory -> {
             navController.navigate(HistoryRoute)
