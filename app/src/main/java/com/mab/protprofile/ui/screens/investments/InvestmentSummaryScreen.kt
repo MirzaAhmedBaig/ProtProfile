@@ -80,24 +80,25 @@ fun InvestmentSummaryScreen(
             },
         ) { innerPadding ->
             ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
             ) {
-
                 val (body) = createRefs()
 
                 Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp)
-                        .constrainAs(body) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                        },
+                    modifier =
+                        Modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp)
+                            .constrainAs(body) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                height = Dimension.fillToConstraints
+                            },
                 ) {
                     TotalInvestmentCard(data.totalInvestment, data.totalProfit)
                     MyInvestmentSection(
@@ -116,22 +117,23 @@ fun InvestmentSummaryScreen(
         Timber.d("InvestmentSummaryScreen: LaunchedEffect triggered to load data")
         viewModel.loadData(showErrorSnackbar)
     }
-
 }
 
 @Composable
 fun TotalInvestmentCard(totalInvestment: Int, totalProfit: Int) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
         FinanceCard(
-            modifier = Modifier
-                .weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f),
             title = "Total Investment",
             amount = "₹$totalInvestment",
             valueColor = TotalInvestment,
         )
         FinanceCard(
-            modifier = Modifier
-                .weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f),
             title = "Total Profit",
             amount = "₹$totalProfit",
             valueColor = GoodColor,
@@ -146,15 +148,17 @@ fun MyInvestmentSection(
 ) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
         FinanceCard(
-            modifier = Modifier
-                .weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f),
             title = "Your Investment",
             amount = "₹$myInvestment",
             valueColor = YourInvestment,
         )
         FinanceCard(
-            modifier = Modifier
-                .weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f),
             title = "Your Profit Share",
             amount = "₹$myShare%",
             valueColor = YourProfitShare,
@@ -170,11 +174,12 @@ fun ExpandableAssetsSection(assets: Map<String, Int>) {
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .clickable { expanded = !expanded }
-            .fillMaxWidth()
-            .animateContentSize()
-            .padding(4.dp),
+        modifier =
+            Modifier
+                .clickable { expanded = !expanded }
+                .fillMaxWidth()
+                .animateContentSize()
+                .padding(4.dp),
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(
@@ -206,7 +211,7 @@ fun ExpandableAssetsSection(assets: Map<String, Int>) {
                     fontWeight = FontWeight.Medium,
                 )
                 Text(
-                    "₹${totalCost}",
+                    "₹$totalCost",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -234,8 +239,9 @@ fun ExpandableAssetsSection(assets: Map<String, Int>) {
                                 fontWeight = FontWeight.Medium,
                             )
                         }
-                        if (index < assets.size - 1)
+                        if (index < assets.size - 1) {
                             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                        }
                     }
                 }
             }
@@ -250,11 +256,12 @@ fun PartnersSection(partners: List<Partner>) {
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .clickable { expanded = !expanded }
-            .fillMaxWidth()
-            .animateContentSize()
-            .padding(4.dp),
+        modifier =
+            Modifier
+                .clickable { expanded = !expanded }
+                .fillMaxWidth()
+                .animateContentSize()
+                .padding(4.dp),
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(
@@ -329,7 +336,3 @@ fun PartnersSection(partners: List<Partner>) {
         }
     }
 }
-
-
-
-

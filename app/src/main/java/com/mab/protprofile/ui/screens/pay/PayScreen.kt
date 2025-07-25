@@ -67,7 +67,6 @@ fun PayScreen(
             showErrorSnackbar = showErrorSnackbar,
             goto = goto,
         )
-
     }
 }
 
@@ -92,16 +91,17 @@ fun PayScreenContent(
             },
         ) { innerPadding ->
             ConstraintLayout(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                focusManager.clearFocus()
-                            },
-                        )
-                    }
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    focusManager.clearFocus()
+                                },
+                            )
+                        }
+                        .fillMaxSize(),
             ) {
                 val payment = remember { mutableStateOf(Payment()) }
 
@@ -116,30 +116,33 @@ fun PayScreenContent(
                 val (form) = createRefs()
 
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 24.dp)
-                        .constrainAs(form) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(top = 24.dp)
+                            .constrainAs(form) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                bottom.linkTo(parent.bottom)
+                            },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top,
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         ExposedDropdownField(
                             label = "Month",
                             options = months,
-                            selectedOption = payment.value.paymentMonth?.toString()
-                                ?: "",
+                            selectedOption =
+                                payment.value.paymentMonth?.toString()
+                                    ?: "",
                             onOptionSelected = {
                                 payment.value =
                                     payment.value.copy(paymentMonth = it.toInt())
@@ -147,16 +150,16 @@ fun PayScreenContent(
                             expanded = showMonthMenu,
                             onExpandedChange = { showMonthMenu = it },
                             modifier = Modifier.weight(1f),
-
-                            )
+                        )
 
                         Spacer(Modifier.size(16.dp))
 
                         ExposedDropdownField(
                             label = "Year",
                             options = years.map { it.toString() },
-                            selectedOption = payment.value.paymentYear?.toString()
-                                ?: "",
+                            selectedOption =
+                                payment.value.paymentYear?.toString()
+                                    ?: "",
                             onOptionSelected = {
                                 payment.value =
                                     payment.value.copy(paymentYear = it.toInt())
@@ -164,8 +167,7 @@ fun PayScreenContent(
                             expanded = showYearMenu,
                             onExpandedChange = { showYearMenu = it },
                             modifier = Modifier.weight(1f),
-
-                            )
+                        )
                     }
 
                     ExposedDropdownField(
@@ -178,9 +180,10 @@ fun PayScreenContent(
                         },
                         expanded = showPayToMenu,
                         onExpandedChange = { showPayToMenu = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                     )
 
                     OutlinedTextField(
@@ -189,14 +192,16 @@ fun PayScreenContent(
                             payment.value =
                                 payment.value.copy(amount = it.toIntOrNull())
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                         label = { Text("Amount") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
-                        ),
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Done,
+                            ),
                         singleLine = true,
                     )
 
@@ -204,7 +209,6 @@ fun PayScreenContent(
 
                     StandardButton(
                         label = R.string.add_payment,
-
                         onButtonClick = {
                             if (payment.value.paymentMonth == null ||
                                 payment.value.paymentYear == null ||
@@ -217,11 +221,9 @@ fun PayScreenContent(
                                 Timber.i("Validation successful, saving payment: ${payment.value}")
                                 viewModel.addPayment(payment.value, showErrorSnackbar)
                             }
-
                         },
                     )
                 }
-
             }
         }
     }

@@ -27,7 +27,6 @@ import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 
-
 @Composable
 fun NetProfitTrendChart(data: List<Pair<String, Int>>) {
     val profits = data.map { it.second.toFloat() }
@@ -55,39 +54,45 @@ fun NetProfitTrendChart(data: List<Pair<String, Int>>) {
 
     Column {
         ChartLegend(
-            labels= listOf("Good Month","Bad Month"),
-            colors = listOf(GoodColor,BadColor)
+            labels = listOf("Good Month", "Bad Month"),
+            colors = listOf(GoodColor, BadColor),
         )
         CartesianChartHost(
-            chart = rememberCartesianChart(
-                rememberColumnCartesianLayer(
-                    columnProvider =
-                        remember(positiveColumn, negativeColumn) {
-                            getColumnProvider(positiveColumn, negativeColumn, avgProfit)
-                        },
-                    columnCollectionSpacing = 4.dp,
-                ),
-                startAxis = VerticalAxis.rememberStart(
-                    title = "Rupees",
-                    titleComponent = rememberAxisLabelComponent(
-                        typeface = Typeface.DEFAULT_BOLD
-                    )
-                ),
-                bottomAxis = HorizontalAxis.rememberBottom(
-                    title = "Months",
-                    titleComponent = rememberAxisLabelComponent(
-                        typeface = Typeface.DEFAULT_BOLD
+            chart =
+                rememberCartesianChart(
+                    rememberColumnCartesianLayer(
+                        columnProvider =
+                            remember(positiveColumn, negativeColumn) {
+                                getColumnProvider(positiveColumn, negativeColumn, avgProfit)
+                            },
+                        columnCollectionSpacing = 4.dp,
                     ),
-                    valueFormatter = { a, x, b ->
-                        labels.getOrNull(x.toInt()).orEmpty()
-                    }
+                    startAxis =
+                        VerticalAxis.rememberStart(
+                            title = "Rupees",
+                            titleComponent =
+                                rememberAxisLabelComponent(
+                                    typeface = Typeface.DEFAULT_BOLD,
+                                ),
+                        ),
+                    bottomAxis =
+                        HorizontalAxis.rememberBottom(
+                            title = "Months",
+                            titleComponent =
+                                rememberAxisLabelComponent(
+                                    typeface = Typeface.DEFAULT_BOLD,
+                                ),
+                            valueFormatter = { a, x, b ->
+                                labels.getOrNull(x.toInt()).orEmpty()
+                            },
+                        ),
+                    decorations = listOf(rememberAvgHorizontalLine(avgProfit, "Avg Profit")),
                 ),
-                decorations = listOf(rememberAvgHorizontalLine(avgProfit, "Avg Profit"))
-            ),
             modelProducer = modelProducer,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
             scrollState = rememberVicoScrollState(initialScroll = Scroll.Absolute.End),
         )
     }

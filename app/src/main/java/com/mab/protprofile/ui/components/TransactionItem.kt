@@ -26,20 +26,17 @@ import com.mab.protprofile.ui.utils.monthName
 
 @Composable
 fun TransactionItem(transaction: Transaction, onEdit: (String) -> Unit) {
-
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = {
-                onEdit(transaction.id)
-            })
-            .padding(8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = {
+                    onEdit(transaction.id)
+                })
+                .padding(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(12.dp)
-
+        shape = RoundedCornerShape(12.dp),
     ) {
-
-
         Column(modifier = Modifier.padding(16.dp)) {
             val netProfit = (transaction.totalProfit ?: 0) - (transaction.totalExpense ?: 0)
             val color = if (netProfit >= 0) GoodColor else BadColor
@@ -47,18 +44,18 @@ fun TransactionItem(transaction: Transaction, onEdit: (String) -> Unit) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "${monthName(transaction.transactionMonth)} ${transaction.transactionYear}",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = "Net Profit : ₹$netProfit",
                     color = color,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
 
@@ -67,7 +64,7 @@ fun TransactionItem(transaction: Transaction, onEdit: (String) -> Unit) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = "Total Purchase: ₹${transaction.totalPurchase ?: 0}")
                 Text(text = "Total Sale: ₹${transaction.totalSale ?: 0}")
@@ -76,7 +73,7 @@ fun TransactionItem(transaction: Transaction, onEdit: (String) -> Unit) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = "Total Expense: ₹${transaction.totalExpense ?: 0}")
                 Text(text = "Gross Profit: ₹${transaction.totalProfit ?: 0}")
@@ -87,9 +84,8 @@ fun TransactionItem(transaction: Transaction, onEdit: (String) -> Unit) {
             Text(
                 text = "Added By: ${transaction.addedBy}",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                color = Color.Gray,
             )
         }
     }
-
 }

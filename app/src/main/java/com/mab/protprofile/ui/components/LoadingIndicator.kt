@@ -14,11 +14,11 @@ import com.mab.protprofile.ui.theme.LightYellow
 @Composable
 fun LoadingIndicator() {
     Box(modifier = Modifier.fillMaxSize()) {
-
         CircularProgressIndicator(
-            modifier = Modifier
-                .width(64.dp)
-                .align(Alignment.Center),
+            modifier =
+                Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
             color = DarkBlue,
             trackColor = LightYellow,
         )

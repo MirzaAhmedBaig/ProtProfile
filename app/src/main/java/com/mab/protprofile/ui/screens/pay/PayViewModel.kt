@@ -16,47 +16,48 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PayViewModel
-@Inject
-constructor(
-    private val authRepository: AuthRepository,
-    private val dataRepository: MyDataRepository,
-) : MainViewModel() {
-    private val _done = MutableStateFlow(false)
-    val done: StateFlow<Boolean>
-        get() = _done.asStateFlow()
+    @Inject
+    constructor(
+        private val authRepository: AuthRepository,
+        private val dataRepository: MyDataRepository,
+    ) : MainViewModel() {
+        private val _done = MutableStateFlow(false)
+        val done: StateFlow<Boolean>
+            get() = _done.asStateFlow()
 
-    private val _users = MutableStateFlow<List<UserInfo>?>(null)
-    val users: StateFlow<List<UserInfo>?>
-        get() = _users.asStateFlow()
+        private val _users = MutableStateFlow<List<UserInfo>?>(null)
+        val users: StateFlow<List<UserInfo>?>
+            get() = _users.asStateFlow()
 
-    private lateinit var currentUser: UserInfo
+        private lateinit var currentUser: UserInfo
 
-    init {
-        Timber.d("PayViewModel initialized")
-    }
+        init {
+            Timber.d("PayViewModel initialized")
+        }
 
-    fun loadUsers(showErrorSnackbar: (ErrorMessage) -> Unit) {
-        launchCatching(showErrorSnackbar) {
-            currentUser = dataRepository.getUserInfo(authRepository.currentUser?.phoneNumber!!)
-            val users = dataRepository.getUsers()
-            if (currentUser.parent != true) {
-                _users.value = users.filter { it.parent != false }
-            }else{
-                _users.value = users
+        fun loadUsers(showErrorSnackbar: (ErrorMessage) -> Unit) {
+            launchCatching(showErrorSnackbar) {
+                currentUser = dataRepository.getUserInfo(authRepository.currentUser?.phoneNumber!!)
+                val users = dataRepository.getUsers()
+                if (currentUser.parent != true) {
+                    _users.value = users.filter { it.parent != false }
+                } else {
+                    _users.value = users
+                }
+            }
+        }
+
+        fun addPayment(payment: Payment, showErrorSnackbar: (ErrorMessage) -> Unit) {
+            launchCatching(showErrorSnackbar) {
+                val paymentData =
+                    payment.copy(
+                        id = "${payment.paymentMonth}:${payment.paymentYear}:${currentUser.name}",
+                        date = getCurrentDateTimeString(),
+                        addedBy = currentUser.name,
+                    )
+                dataRepository.createPayment(paymentData)
+                Timber.i("Successfully Added new payment")
+                _done.value = true
             }
         }
     }
-
-    fun addPayment(payment: Payment, showErrorSnackbar: (ErrorMessage) -> Unit) {
-        launchCatching(showErrorSnackbar) {
-            val paymentData = payment.copy(
-                id = "${payment.paymentMonth}:${payment.paymentYear}:${currentUser.name}",
-                date = getCurrentDateTimeString(),
-                addedBy = currentUser.name,
-            )
-            dataRepository.createPayment(paymentData)
-            Timber.i("Successfully Added new payment")
-            _done.value = true
-        }
-    }
-}

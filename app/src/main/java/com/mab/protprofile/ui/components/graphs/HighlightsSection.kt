@@ -19,7 +19,6 @@ import com.mab.protprofile.R
 import com.mab.protprofile.ui.theme.BadColor
 import com.mab.protprofile.ui.theme.GoodColor
 
-
 @Composable
 fun HighlightsSection(highlights: List<Pair<String, Int>>) {
     val bestMonth = highlights.first()
@@ -28,14 +27,15 @@ fun HighlightsSection(highlights: List<Pair<String, Int>>) {
         Card(
             elevation = CardDefaults.cardElevation(2.dp),
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-                .weight(1f)
-                .padding(4.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(4.dp),
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
                 Image(
                     painter = painterResource(R.drawable.good),
-                    contentDescription = "Best Month"
+                    contentDescription = "Best Month",
                 )
                 Column(Modifier.padding(start = 8.dp)) {
                     Text("Best Month", style = MaterialTheme.typography.bodyLarge)
@@ -43,7 +43,7 @@ fun HighlightsSection(highlights: List<Pair<String, Int>>) {
                     Text(
                         "₹${bestMonth.second}",
                         style = MaterialTheme.typography.titleLarge,
-                        color = GoodColor
+                        color = GoodColor,
                     )
                 }
             }
@@ -52,15 +52,15 @@ fun HighlightsSection(highlights: List<Pair<String, Int>>) {
         Card(
             elevation = CardDefaults.cardElevation(2.dp),
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-                .weight(1f)
-                .padding(4.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(4.dp),
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
                 Image(
                     painter = painterResource(R.drawable.bad),
-                    contentDescription = "Worst Month"
-
+                    contentDescription = "Worst Month",
                 )
                 Column(Modifier.padding(start = 8.dp)) {
                     Text("Worst Month", style = MaterialTheme.typography.bodyLarge)
@@ -68,7 +68,7 @@ fun HighlightsSection(highlights: List<Pair<String, Int>>) {
                     Text(
                         "₹${worstMonth.second}",
                         style = MaterialTheme.typography.titleLarge,
-                        color = BadColor
+                        color = BadColor,
                     )
                 }
             }

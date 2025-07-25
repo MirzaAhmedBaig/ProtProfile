@@ -17,20 +17,25 @@ import androidx.compose.ui.unit.sp
 import com.mab.protprofile.ui.theme.DarkBlue
 
 @Composable
-fun StandardButton(@StringRes label: Int, onButtonClick: () -> Unit) {
+fun StandardButton(
+    @StringRes label: Int,
+    onButtonClick: () -> Unit,
+) {
     val focusManager = LocalFocusManager.current
     OutlinedButton(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
         onClick = {
             focusManager.clearFocus()
             onButtonClick()
         },
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = DarkBlue,
-            contentColor = Color.White,
-        ),
+        colors =
+            ButtonDefaults.outlinedButtonColors(
+                containerColor = DarkBlue,
+                contentColor = Color.White,
+            ),
         border = BorderStroke(1.dp, DarkBlue),
     ) {
         Text(

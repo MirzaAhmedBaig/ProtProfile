@@ -28,7 +28,9 @@ import com.mab.protprofile.data.model.ErrorMessage
 
 sealed class ExpenseState() {
     object Edition : ExpenseState()
+
     object Saved : ExpenseState()
+
     object Cleared : ExpenseState()
 }
 
@@ -45,9 +47,10 @@ fun SingleExpenseItem(
     var expenseAmount by remember { mutableStateOf(amount) }
 
     Row(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -67,13 +70,15 @@ fun SingleExpenseItem(
         OutlinedTextField(
             value = expenseAmount?.toString() ?: "",
             onValueChange = { expenseAmount = it.toIntOrNull() },
-            modifier = Modifier
-                .weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f),
             label = { Text("Amount") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
             enabled = expense.isBlank(),
             singleLine = true,
         )
@@ -90,7 +95,6 @@ fun SingleExpenseItem(
                     onSave(selectedExpense, expenseAmount!!)
                     selectedExpense = ""
                     expenseAmount = null
-
                 },
             ) {
                 Icon(

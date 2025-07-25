@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -18,13 +17,12 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.mab.protprofile.R
 import com.mab.protprofile.ui.theme.DarkGrey
 import com.mab.protprofile.ui.theme.LightYellow
-import com.mab.protprofile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,18 +30,19 @@ fun CenterTopAppBar(
     title: String,
     actions: @Composable RowScope.() -> Unit = {},
     onBack: (() -> Unit)? = null,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     CenterAlignedTopAppBar(
         colors = appBarColors(),
-        modifier = Modifier.shadow(
-            elevation = 5.dp
-        ),
+        modifier =
+            Modifier.shadow(
+                elevation = 5.dp,
+            ),
         title = {
             Text(
                 title,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         actions = actions,
@@ -52,15 +51,16 @@ fun CenterTopAppBar(
                 IconButton(onClick = onBack) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
-                        stringResource(id = R.string.menu_back)
+                        stringResource(id = R.string.menu_back),
                     )
                 }
             }
         },
-        windowInsets = WindowInsets(
-            top = 0.dp,
-        ),
-        scrollBehavior = scrollBehavior
+        windowInsets =
+            WindowInsets(
+                top = 0.dp,
+            ),
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -68,7 +68,7 @@ fun CenterTopAppBar(
 @Composable
 fun CenterTopAppBar(
     title: String,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     CenterAlignedTopAppBar(
         colors = appBarColors(),
@@ -76,10 +76,10 @@ fun CenterTopAppBar(
             Text(
                 title,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -90,7 +90,7 @@ private fun appBarColors(): TopAppBarColors {
         TopAppBarDefaults.centerAlignedTopAppBarColors()
     } else {
         TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = if (isSystemInDarkTheme()) DarkGrey else LightYellow
+            containerColor = if (isSystemInDarkTheme()) DarkGrey else LightYellow,
         )
     }
 }

@@ -27,8 +27,8 @@ import com.mab.protprofile.ui.components.LoadingIndicator
 import com.mab.protprofile.ui.components.TransactionHistoryItem
 import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
-import timber.log.Timber
 import kotlinx.serialization.Serializable
+import timber.log.Timber
 
 @Serializable
 object HistoryRoute
@@ -37,7 +37,7 @@ object HistoryRoute
 fun HistoryScreen(
     goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    viewModel: HistoryViewModel = hiltViewModel()
+    viewModel: HistoryViewModel = hiltViewModel(),
 ) {
     Timber.d("HistoryScreen composable launched")
     val transactionsHistory by viewModel.transactionsHistory.collectAsStateWithLifecycle()
@@ -47,21 +47,19 @@ fun HistoryScreen(
     } else {
         HistoryScreenContent(
             goto = goto,
-            transactionsHistory = transactionsHistory!!
+            transactionsHistory = transactionsHistory!!,
         )
     }
     LaunchedEffect(true) {
         viewModel.fetchAllHistory(showErrorSnackbar)
     }
-
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreenContent(
     goto: (RouteInfo) -> Unit,
-    transactionsHistory: Map<String, List<TransactionHistory>>
+    transactionsHistory: Map<String, List<TransactionHistory>>,
 ) {
     Scaffold(
         topBar = {
@@ -72,37 +70,41 @@ fun HistoryScreenContent(
         },
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 4.dp,
-                    end = 4.dp,
-                    bottom = 4.dp
-                )
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = 4.dp,
+                        end = 4.dp,
+                        bottom = 4.dp,
+                    ),
         ) {
             val (list, noData) = createRefs()
             if (transactionsHistory.isEmpty()) {
                 Text(
                     text = "No Data Found",
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.constrainAs(noData) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    })
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(list) {
+                    modifier =
+                        Modifier.constrainAs(noData) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                        }
+                        },
+                )
+            } else {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .constrainAs(list) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                height = Dimension.fillToConstraints
+                            },
                 ) {
                     transactionsHistory.forEach { (transId, historyList) ->
                         item {
@@ -111,7 +113,6 @@ fun HistoryScreenContent(
                     }
                 }
             }
-
         }
     }
 }
@@ -122,7 +123,7 @@ fun HistoryScreenPreview() {
     ProtProfileTheme(darkTheme = true) {
         HistoryScreenContent(
             goto = {},
-            transactionsHistory = mapOf()
+            transactionsHistory = mapOf(),
         )
     }
 }

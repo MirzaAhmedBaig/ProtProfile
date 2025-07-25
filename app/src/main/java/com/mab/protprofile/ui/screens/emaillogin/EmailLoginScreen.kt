@@ -49,7 +49,7 @@ object EmailLoginRoute
 fun EmailLoginScreen(
     goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
-    viewModel: EmailLoginViewModel = hiltViewModel()
+    viewModel: EmailLoginViewModel = hiltViewModel(),
 ) {
     Timber.d("EmailLoginScreen recomposed")
     val shouldRestartApp by viewModel.shouldRestartApp.collectAsStateWithLifecycle()
@@ -59,17 +59,16 @@ fun EmailLoginScreen(
     } else {
         LoginScreenContent(
             signIn = viewModel::signIn,
-            showErrorSnackbar = showErrorSnackbar
+            showErrorSnackbar = showErrorSnackbar,
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreenContent(
     signIn: (String, String, (ErrorMessage) -> Unit) -> Unit,
-    showErrorSnackbar: (ErrorMessage) -> Unit
+    showErrorSnackbar: (ErrorMessage) -> Unit,
 ) {
     Timber.d("LoginScreenContent recomposed")
     var email by remember { mutableStateOf("") }
@@ -77,80 +76,88 @@ fun LoginScreenContent(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             val (appLogo, form) = createRefs()
 
             createVerticalChain(
-                appLogo, form,
-                chainStyle = ChainStyle.Packed(bias = 0.3f)
+                appLogo,
+                form,
+                chainStyle = ChainStyle.Packed(bias = 0.3f),
             )
 
             Column(
-                modifier = Modifier
-                    .constrainAs(appLogo) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(form.top)
-                    },
+                modifier =
+                    Modifier
+                        .constrainAs(appLogo) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(form.top)
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
                     modifier = Modifier.size(88.dp),
                     painter = painterResource(id = R.drawable.app_logo),
-                    contentDescription = stringResource(R.string.app_logo)
+                    contentDescription = stringResource(R.string.app_logo),
                 )
 
                 Spacer(Modifier.size(12.dp))
             }
 
             Column(
-                modifier = Modifier
-                    .constrainAs(form) {
-                        top.linkTo(appLogo.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .constrainAs(form) {
+                            top.linkTo(appLogo.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        },
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(Modifier.size(24.dp))
 
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     value = email,
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
                     onValueChange = { email = it },
-                    label = { Text(stringResource(R.string.email)) }
+                    label = { Text(stringResource(R.string.email)) },
                 )
 
                 Spacer(Modifier.size(16.dp))
 
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     value = password,
                     onValueChange = { password = it },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
                     label = { Text(stringResource(R.string.password)) },
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = PasswordVisualTransformation(),
                 )
 
                 Spacer(Modifier.size(32.dp))
@@ -160,11 +167,9 @@ fun LoginScreenContent(
                     onButtonClick = {
                         Timber.d("Sign in button clicked")
                         signIn(email, password, showErrorSnackbar)
-                    }
+                    },
                 )
-
             }
-
         }
     }
 }
@@ -176,9 +181,8 @@ fun LoginScreenPreview() {
         Surface {
             LoginScreenContent(
                 signIn = { _, _, _ -> },
-                showErrorSnackbar = {}
+                showErrorSnackbar = {},
             )
         }
-
     }
 }

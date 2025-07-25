@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun TopAppBarDropdownMenu(
     iconContent: @Composable () -> Unit,
-    content: @Composable ColumnScope.(() -> Unit) -> Unit
+    content: @Composable ColumnScope.(() -> Unit) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -27,7 +27,7 @@ fun TopAppBarDropdownMenu(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.wrapContentSize(Alignment.TopEnd)
+            modifier = Modifier.wrapContentSize(Alignment.TopEnd),
         ) {
             content { expanded = !expanded }
         }

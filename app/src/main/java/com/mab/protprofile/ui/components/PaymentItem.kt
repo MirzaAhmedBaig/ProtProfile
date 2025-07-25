@@ -25,15 +25,13 @@ import com.mab.protprofile.ui.utils.monthName
 @Composable
 fun PaymentItem(payment: Payment, enablePaidTo: Boolean) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(12.dp),
-
-        ) {
-
-
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

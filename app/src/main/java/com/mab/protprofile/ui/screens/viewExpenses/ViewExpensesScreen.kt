@@ -25,7 +25,6 @@ import com.mab.protprofile.ui.Constants
 import com.mab.protprofile.ui.components.CenterTopAppBar
 import com.mab.protprofile.ui.components.ExpenseItem
 import com.mab.protprofile.ui.components.LoadingIndicator
-import com.mab.protprofile.ui.components.TransactionItem
 import com.mab.protprofile.ui.navigation.RouteInfo
 import kotlinx.serialization.Serializable
 import timber.log.Timber
@@ -43,8 +42,9 @@ fun ViewExpensesScreen(
     Timber.d("ViewExpensesScreen Composable launched")
     val expenses = viewModel.expenses.collectAsStateWithLifecycle().value
 
-    val shouldRefreshFlow = navBackStackEntry.savedStateHandle
-        .getStateFlow(Constants.SHOULD_REFRESH_KEY, false)
+    val shouldRefreshFlow =
+        navBackStackEntry.savedStateHandle
+            .getStateFlow(Constants.SHOULD_REFRESH_KEY, false)
     val shouldRefresh by shouldRefreshFlow.collectAsStateWithLifecycle()
 
     if (expenses == null) {
@@ -67,7 +67,6 @@ fun ViewExpensesScreen(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewExpensesScreenContent(
@@ -84,26 +83,28 @@ fun ViewExpensesScreenContent(
         },
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 4.dp,
-                    end = 4.dp,
-                    bottom = 4.dp,
-                ),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = 4.dp,
+                        end = 4.dp,
+                        bottom = 4.dp,
+                    ),
         ) {
             val (list) = createRefs()
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(list) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .constrainAs(list) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            height = Dimension.fillToConstraints
+                        },
             ) {
                 items(expenses) { expense ->
                     ExpenseItem(
@@ -112,8 +113,6 @@ fun ViewExpensesScreenContent(
                     )
                 }
             }
-
-
         }
     }
 }

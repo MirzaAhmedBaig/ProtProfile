@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mab.protprofile.ui.data.OverviewData
 import com.mab.protprofile.ui.theme.ExpenseColor
@@ -33,7 +32,6 @@ import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
 
 @Composable
 fun CumulativeOverviewChart(overviewList: List<OverviewData>) {
-
     val labels = overviewList.map { it.monthYear }
     val sales = overviewList.map { it.cumulativeSale.toFloat() }
     val purchases = overviewList.map { it.cumulativePurchase.toFloat() }
@@ -56,43 +54,47 @@ fun CumulativeOverviewChart(overviewList: List<OverviewData>) {
     Column {
         ChartLegend(
             labels = listOf("Purchase", "Sale", "Expense", "Net Profit"),
-            colors = listOf(PurchaseColor, SaleColor, ExpenseColor, NetProfitColor)
+            colors = listOf(PurchaseColor, SaleColor, ExpenseColor, NetProfitColor),
         )
         CartesianChartHost(
-            chart = rememberCartesianChart(
-                rememberColumnCartesianLayer(
-                    columnCollectionSpacing = 35.dp,
-                    columnProvider = ColumnCartesianLayer.ColumnProvider.series(
-                        rememberLineComponent(fill = fill(PurchaseColor), thickness = 15.dp),
-                        rememberLineComponent(fill = fill(SaleColor), thickness = 15.dp),
-                        rememberLineComponent(fill = fill(ExpenseColor), thickness = 15.dp),
-                        rememberLineComponent(fill = fill(NetProfitColor), thickness = 15.dp),
-                    )
-
-                ),
-                startAxis = VerticalAxis.rememberStart(
-                    title = "Rupees",
-                    titleComponent = rememberAxisLabelComponent(
-                        typeface = Typeface.DEFAULT_BOLD
-                    )
-                ),
-                bottomAxis = HorizontalAxis.rememberBottom(
-                    title = "Months",
-                    titleComponent = rememberAxisLabelComponent(
-                        typeface = Typeface.DEFAULT_BOLD
+            chart =
+                rememberCartesianChart(
+                    rememberColumnCartesianLayer(
+                        columnCollectionSpacing = 35.dp,
+                        columnProvider =
+                            ColumnCartesianLayer.ColumnProvider.series(
+                                rememberLineComponent(fill = fill(PurchaseColor), thickness = 15.dp),
+                                rememberLineComponent(fill = fill(SaleColor), thickness = 15.dp),
+                                rememberLineComponent(fill = fill(ExpenseColor), thickness = 15.dp),
+                                rememberLineComponent(fill = fill(NetProfitColor), thickness = 15.dp),
+                            ),
                     ),
-                    valueFormatter = { a, x, b ->
-                        labels.getOrNull(x.toInt()).orEmpty()
-                    }
-                )
-            ),
+                    startAxis =
+                        VerticalAxis.rememberStart(
+                            title = "Rupees",
+                            titleComponent =
+                                rememberAxisLabelComponent(
+                                    typeface = Typeface.DEFAULT_BOLD,
+                                ),
+                        ),
+                    bottomAxis =
+                        HorizontalAxis.rememberBottom(
+                            title = "Months",
+                            titleComponent =
+                                rememberAxisLabelComponent(
+                                    typeface = Typeface.DEFAULT_BOLD,
+                                ),
+                            valueFormatter = { a, x, b ->
+                                labels.getOrNull(x.toInt()).orEmpty()
+                            },
+                        ),
+                ),
             modelProducer = modelProducer,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
             scrollState = rememberVicoScrollState(initialScroll = Scroll.Absolute.End),
         )
     }
-
-
 }

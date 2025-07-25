@@ -33,20 +33,21 @@ import com.mab.protprofile.ui.utils.monthName
 @Composable
 fun TransactionHistoryItem(transId: String, historyList: List<TransactionHistory>) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = {
-            })
-            .padding(8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = {
+                })
+                .padding(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
     ) {
         val date = transId.split(":")
         Column(Modifier.padding(16.dp)) {
             Text(
                 "${monthName(date.first().toInt())} ${date.last()}",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(Modifier.height(8.dp))
             TransactionHistoryTimeline(historyList)
@@ -60,36 +61,40 @@ fun TransactionHistoryTimeline(historyList: List<TransactionHistory>) {
         historyList.forEachIndexed { idx, history ->
             Row(
                 Modifier.height(IntrinsicSize.Min),
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.Top,
             ) {
                 // Timeline Section: Full height for continuous line
                 Box(
                     Modifier
                         .width(24.dp)
                         .fillMaxHeight(), // Makes the Box as tall as this Row!
-                    contentAlignment = Alignment.TopCenter
+                    contentAlignment = Alignment.TopCenter,
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(30.dp), // Adjust width as needed
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier =
+                            Modifier
+                                .fillMaxHeight()
+                                .width(30.dp),
+                        // Adjust width as needed
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Box(
-                            modifier = Modifier
-                                .size(16.dp)
-                                .background(
-                                    if (idx == 0) Color.Green else Color.Gray,
-                                    shape = CircleShape
-                                )
+                            modifier =
+                                Modifier
+                                    .size(16.dp)
+                                    .background(
+                                        if (idx == 0) Color.Green else Color.Gray,
+                                        shape = CircleShape,
+                                    ),
                         )
                         if (idx != historyList.lastIndex) {
                             // Draw connecting line between timeline items
                             Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .width(2.dp)
-                                    .background(Color.Gray)
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .width(2.dp)
+                                        .background(Color.Gray),
                             )
                         }
                     }
@@ -99,7 +104,7 @@ fun TransactionHistoryTimeline(historyList: List<TransactionHistory>) {
                     Text(
                         formatDate(history.date),
                         style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Text("Changed By: ${history.editedBy}", style = MaterialTheme.typography.bodyMedium)
                     TransactionChangeText(history.changes)
@@ -112,13 +117,14 @@ fun TransactionHistoryTimeline(historyList: List<TransactionHistory>) {
 
 @Composable
 fun TransactionChangeText(change: TransactionChange) {
-    val changesDesc = listOfNotNull(
-        change.totalSale?.let { "Total Sale: $it" },
-        change.totalPurchase?.let { "Total Purchase: $it" },
-        change.creditPurchase?.let { "Credit Purchase: $it" },
-        change.totalExpense?.let { "Total Expense: $it" },
-        change.totalProfit?.let { "Total Profit: $it" },
-    ).joinToString(", ")
+    val changesDesc =
+        listOfNotNull(
+            change.totalSale?.let { "Total Sale: $it" },
+            change.totalPurchase?.let { "Total Purchase: $it" },
+            change.creditPurchase?.let { "Credit Purchase: $it" },
+            change.totalExpense?.let { "Total Expense: $it" },
+            change.totalProfit?.let { "Total Profit: $it" },
+        ).joinToString(", ")
     if (changesDesc.isNotEmpty()) {
         Text(changesDesc, style = MaterialTheme.typography.bodySmall)
     }

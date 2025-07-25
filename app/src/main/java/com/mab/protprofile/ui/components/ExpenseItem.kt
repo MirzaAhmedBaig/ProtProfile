@@ -21,26 +21,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mab.protprofile.data.model.Expense
 import com.mab.protprofile.ui.theme.BadColor
-import com.mab.protprofile.ui.theme.ExpenseColor
 import com.mab.protprofile.ui.utils.monthName
 
 @Composable
 fun ExpenseItem(expense: Expense, onEdit: (String) -> Unit) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                onClick = {
-                    onEdit(expense.id)
-                },
-            )
-            .padding(8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(
+                    onClick = {
+                        onEdit(expense.id)
+                    },
+                )
+                .padding(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(12.dp),
-
-        ) {
-
-
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             val totalExpense = expense.expenses.values.sum()
             val expensesKind = expense.expenses.keys.joinToString(", ")

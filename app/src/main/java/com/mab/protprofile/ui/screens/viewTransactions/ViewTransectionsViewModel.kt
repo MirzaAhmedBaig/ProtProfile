@@ -13,27 +13,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewTransectionsViewModel
-@Inject
-constructor(
-    private val dataRepository: MyDataRepository,
-) : MainViewModel() {
-    init {
-        Timber.d("ViewEntriesViewModel initialized")
-    }
+    @Inject
+    constructor(
+        private val dataRepository: MyDataRepository,
+    ) : MainViewModel() {
+        init {
+            Timber.d("ViewEntriesViewModel initialized")
+        }
 
-    private val _transactions = MutableStateFlow<List<Transaction>?>(null)
-    val transactions: StateFlow<List<Transaction>?>
-        get() = _transactions.asStateFlow()
+        private val _transactions = MutableStateFlow<List<Transaction>?>(null)
+        val transactions: StateFlow<List<Transaction>?>
+            get() = _transactions.asStateFlow()
 
-    fun fetchAllTransactions(showErrorSnackbar: (ErrorMessage) -> Unit) {
-        launchCatching(showErrorSnackbar) {
-            _transactions.value = dataRepository.getTransactions()
-            Timber.i("Fetched all transactions")
+        fun fetchAllTransactions(showErrorSnackbar: (ErrorMessage) -> Unit) {
+            launchCatching(showErrorSnackbar) {
+                _transactions.value = dataRepository.getTransactions()
+                Timber.i("Fetched all transactions")
+            }
+        }
+
+        override fun onCleared() {
+            super.onCleared()
+            Timber.d("ViewEntriesViewModel cleared")
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        Timber.d("ViewEntriesViewModel cleared")
-    }
-}

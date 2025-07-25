@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,7 +86,6 @@ fun AddViewExpenseScreen(
             showErrorSnackbar = showErrorSnackbar,
             goto = goto,
         )
-
     }
 }
 
@@ -122,7 +120,6 @@ fun AddExpenseScreenLoad(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpenseScreenContent(
@@ -147,36 +144,39 @@ fun AddExpenseScreenContent(
         },
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .padding(innerPadding)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            focusManager.clearFocus()
-                        },
-                    )
-                }
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                focusManager.clearFocus()
+                            },
+                        )
+                    }
+                    .fillMaxSize(),
         ) {
             val editableExpense = remember { mutableStateOf(expense) }
 
-            val editableItemList = remember {
-                mutableStateListOf<ExpenseItem>().apply {
-                    if (editAllowed)
-                        add(
-                            ExpenseItem(name = "", amount = null),
-                        )
-
-                    addAll(
-                        expense.expenses.map {
-                            ExpenseItem(
-                                name = it.key,
-                                amount = it.value,
+            val editableItemList =
+                remember {
+                    mutableStateListOf<ExpenseItem>().apply {
+                        if (editAllowed) {
+                            add(
+                                ExpenseItem(name = "", amount = null),
                             )
-                        },
-                    )
+                        }
+
+                        addAll(
+                            expense.expenses.map {
+                                ExpenseItem(
+                                    name = it.key,
+                                    amount = it.value,
+                                )
+                            },
+                        )
+                    }
                 }
-            }
 
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
             val years = (currentYear - 1)..(currentYear)
@@ -188,22 +188,24 @@ fun AddExpenseScreenContent(
             val (form) = createRefs()
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp)
-                    .constrainAs(form) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    },
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 16.dp)
+                        .constrainAs(form) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -211,8 +213,9 @@ fun AddExpenseScreenContent(
                         label = "Month",
                         options = months,
                         editable = expense.id.isBlank(),
-                        selectedOption = editableExpense.value.expenseMonth?.toString()
-                            ?: "",
+                        selectedOption =
+                            editableExpense.value.expenseMonth?.toString()
+                                ?: "",
                         onOptionSelected = {
                             editableExpense.value =
                                 editableExpense.value.copy(expenseMonth = it.toInt())
@@ -220,8 +223,7 @@ fun AddExpenseScreenContent(
                         expanded = showMonthMenu,
                         onExpandedChange = { showMonthMenu = it },
                         modifier = Modifier.weight(1f),
-
-                        )
+                    )
 
                     Spacer(Modifier.size(16.dp))
 
@@ -229,8 +231,9 @@ fun AddExpenseScreenContent(
                         label = "Year",
                         options = years.map { it.toString() },
                         editable = expense.id.isBlank(),
-                        selectedOption = editableExpense.value.expenseYear?.toString()
-                            ?: "",
+                        selectedOption =
+                            editableExpense.value.expenseYear?.toString()
+                                ?: "",
                         onOptionSelected = {
                             editableExpense.value =
                                 editableExpense.value.copy(expenseYear = it.toInt())
@@ -238,14 +241,14 @@ fun AddExpenseScreenContent(
                         expanded = showYearMenu,
                         onExpandedChange = { showYearMenu = it },
                         modifier = Modifier.weight(1f),
-
-                        )
+                    )
                 }
 
                 LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
                 ) {
                     itemsIndexed(
                         editableItemList,
@@ -280,9 +283,10 @@ fun AddExpenseScreenContent(
                                         onClick = {
                                             editableItemList.remove(item)
                                         },
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .background(Color.Red),
+                                        modifier =
+                                            Modifier
+                                                .clip(CircleShape)
+                                                .background(Color.Red),
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Delete,
@@ -311,24 +315,26 @@ fun AddExpenseScreenContent(
                     }
                 }
 
-                if (editableItemList.size > 1)
+                if (editableItemList.size > 1) {
                     Row(
-                        modifier = Modifier
-                            .padding(24.dp)
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                                shape = OutlinedTextFieldDefaults.shape,
-                            )
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .padding(24.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                    shape = OutlinedTextFieldDefaults.shape,
+                                )
+                                .fillMaxWidth(),
                     ) {
                         Text(
                             "Total",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f),
+                            modifier =
+                                Modifier
+                                    .padding(8.dp)
+                                    .weight(1f),
                         )
                         Text(
                             "${
@@ -337,11 +343,13 @@ fun AddExpenseScreenContent(
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f),
+                            modifier =
+                                Modifier
+                                    .padding(8.dp)
+                                    .weight(1f),
                         )
                     }
+                }
 
                 OutlinedTextField(
                     value = editableExpense.value.notes ?: "",
@@ -349,9 +357,10 @@ fun AddExpenseScreenContent(
                         editableExpense.value =
                             editableExpense.value.copy(notes = it)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text("Details") },
                     minLines = 2,
@@ -360,10 +369,9 @@ fun AddExpenseScreenContent(
 
                 Spacer(Modifier.size(16.dp))
 
-                if (editAllowed)
+                if (editAllowed) {
                     StandardButton(
                         label = R.string.submit,
-
                         onButtonClick = {
                             Timber.i("Saving Expense: ${editableExpense.value}")
                             Timber.i("EditableItemList: $editableItemList")
@@ -376,18 +384,18 @@ fun AddExpenseScreenContent(
                                 showErrorSnackbar(ErrorMessage.StringError("Please fill all the fields"))
                             } else {
                                 Timber.i("Validation successful, saving Expense: ${editableExpense.value}")
-                                val finalExpenses = editableItemList.filter { it.amount != null }
-                                    .associate { it.name to it.amount!! }
+                                val finalExpenses =
+                                    editableItemList.filter { it.amount != null }
+                                        .associate { it.name to it.amount!! }
                                 saveExpense(
                                     editableExpense.value.copy(expenses = finalExpenses),
                                     showErrorSnackbar,
                                 )
                             }
-
                         },
                     )
+                }
             }
-
         }
     }
 }

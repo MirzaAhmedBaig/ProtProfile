@@ -20,18 +20,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mab.protprofile.ui.navigation.AppNavGraph
-import com.mab.protprofile.ui.theme.ProtProfileTheme
-import dagger.hilt.android.AndroidEntryPoint
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.data.model.getResolvedMessage
 import com.mab.protprofile.ui.data.AuthState
+import com.mab.protprofile.ui.navigation.AppNavGraph
 import com.mab.protprofile.ui.screens.home.HomeRoute
-import kotlinx.coroutines.launch
+import com.mab.protprofile.ui.theme.ProtProfileTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -51,7 +50,7 @@ class MainActivity : ComponentActivity() {
                         snackbarHostState.currentSnackbarData?.dismiss()
                         snackbarHostState.showSnackbar(message)
                     }
-                }
+                },
             )
         }
     }
@@ -60,7 +59,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     snackbarHostState: SnackbarHostState,
-    showErrorSnackbar: (ErrorMessage) -> Unit
+    showErrorSnackbar: (ErrorMessage) -> Unit,
 ) {
     Timber.d("MainScreen")
     val viewModel: AuthViewModel = viewModel()
@@ -71,7 +70,8 @@ fun MainScreen(
         ) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { innerPadding ->
+                snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+            ) { innerPadding ->
                 val authState = viewModel.authState.collectAsStateWithLifecycle()
 
                 when (authState.value) {
@@ -79,7 +79,7 @@ fun MainScreen(
                         Timber.d("AuthState.Loading")
                         Box(
                             modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
                             CircularProgressIndicator()
                         }
@@ -90,9 +90,7 @@ fun MainScreen(
                         AppNavGraph(
                             modifier = Modifier.padding(innerPadding),
                             startDestination = HomeRoute,
-                            showErrorSnackbar = showErrorSnackbar
-
-
+                            showErrorSnackbar = showErrorSnackbar,
                         )
                     }
 
@@ -100,11 +98,10 @@ fun MainScreen(
                         Timber.d("AuthState.Unauthenticated")
                         AppNavGraph(
                             modifier = Modifier.padding(innerPadding),
-                            showErrorSnackbar = showErrorSnackbar
+                            showErrorSnackbar = showErrorSnackbar,
                         )
                     }
                 }
-
             }
         }
     }

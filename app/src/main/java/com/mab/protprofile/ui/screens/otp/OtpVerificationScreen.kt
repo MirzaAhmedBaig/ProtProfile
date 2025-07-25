@@ -74,17 +74,18 @@ fun OtpVerificationScreen(
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    Timber.d("Pointer input detected, clearing focus.")
-                    detectTapGestures(
-                        onTap = {
-                            focusManager.clearFocus()
-                        },
-                    )
-                }
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        Timber.d("Pointer input detected, clearing focus.")
+                        detectTapGestures(
+                            onTap = {
+                                focusManager.clearFocus()
+                            },
+                        )
+                    }
+                    .padding(innerPadding),
         ) {
             val (form) = createRefs()
 
@@ -94,14 +95,15 @@ fun OtpVerificationScreen(
             }
 
             Column(
-                modifier = Modifier
-                    .constrainAs(form) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier =
+                    Modifier
+                        .constrainAs(form) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                            height = Dimension.fillToConstraints
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -112,16 +114,18 @@ fun OtpVerificationScreen(
                 )
 
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                            .padding(horizontal = 24.dp),
                     value = otp,
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done,
+                        ),
                     onValueChange = {
                         Timber.d("OTP value changed: $it")
                         if (it.length <= 6) {
@@ -183,6 +187,5 @@ fun LoginScreenPreview() {
                 showErrorSnackbar = {},
             )
         }
-
     }
 }

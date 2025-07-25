@@ -2,7 +2,6 @@ package com.mab.protprofile.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -26,11 +25,13 @@ fun ExposedDropdownField(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     editable: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Box(modifier.clickable {
-        onExpandedChange(!expanded)
-    }) {
+    Box(
+        modifier.clickable {
+            onExpandedChange(!expanded)
+        },
+    ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = selectedOption ?: "",
@@ -41,16 +42,17 @@ fun ExposedDropdownField(
             enabled = editable,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             trailingIcon = {
-                if (editable)
+                if (editable) {
                     IconButton(onClick = { onExpandedChange(!expanded) }) {
                         Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
                     }
-            }
+                }
+            },
         )
-        if (editable)
+        if (editable) {
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { onExpandedChange(false) }
+                onDismissRequest = { onExpandedChange(false) },
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(onClick = {
@@ -61,5 +63,6 @@ fun ExposedDropdownField(
                     })
                 }
             }
+        }
     }
 }

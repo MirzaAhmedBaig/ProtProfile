@@ -2,7 +2,6 @@ package com.mab.protprofile.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,13 +25,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mab.protprofile.ui.components.CenterTopAppBar
-import kotlinx.serialization.Serializable
 import com.mab.protprofile.R
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.data.model.Transaction
 import com.mab.protprofile.data.model.UserInfo
 import com.mab.protprofile.data.model.UserRole
+import com.mab.protprofile.ui.components.CenterTopAppBar
 import com.mab.protprofile.ui.components.LoadingIndicator
 import com.mab.protprofile.ui.components.TopAppBarDropdownMenu
 import com.mab.protprofile.ui.components.graphs.CashCreditPurchasesChart
@@ -45,8 +44,8 @@ import com.mab.protprofile.ui.components.graphs.NetProfitTrendChart
 import com.mab.protprofile.ui.components.graphs.SalesPurchasesChart
 import com.mab.protprofile.ui.data.FinanceData
 import com.mab.protprofile.ui.navigation.RouteInfo
+import kotlinx.serialization.Serializable
 import timber.log.Timber
-
 
 @Serializable
 object HomeRoute
@@ -100,7 +99,6 @@ fun HomeScreenLoad(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
@@ -128,41 +126,42 @@ fun HomeScreenContent(
         },
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
-
             val (body, noData) = createRefs()
 
             if (financeData == null) {
                 Text(
                     text = "No Data Found",
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.constrainAs(noData) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                )
-            } else {
-                AnalyticsScreen(
-                    financeData = financeData,
-                    modifier = Modifier
-                        .constrainAs(body) {
+                    modifier =
+                        Modifier.constrainAs(noData) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
                         },
+                )
+            } else {
+                AnalyticsScreen(
+                    financeData = financeData,
+                    modifier =
+                        Modifier
+                            .constrainAs(body) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                height = Dimension.fillToConstraints
+                            },
                 )
             }
         }
     }
 }
-
 
 @Composable
 private fun MoreTasksMenu(
@@ -182,50 +181,78 @@ private fun MoreTasksMenu(
         if (role == UserRole.ADMIN) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.investment_summary)) },
-                onClick = { goto(RouteInfo.InvestmentSummary(totalProfit)); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.InvestmentSummary(totalProfit))
+                    closeMenu()
+                },
             )
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.add_transaction)) },
-                onClick = { goto(RouteInfo.AddViewTransaction("")); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.AddViewTransaction(""))
+                    closeMenu()
+                },
             )
         }
-        if (transactions.isNotEmpty())
+        if (transactions.isNotEmpty()) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.transactions)) },
-                onClick = { goto(RouteInfo.ViewTransactions(transactions)); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.ViewTransactions(transactions))
+                    closeMenu()
+                },
             )
+        }
         if (role == UserRole.ADMIN && transactions.isNotEmpty()) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.open_transactions_history)) },
-                onClick = { goto(RouteInfo.TransactionsHistory); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.TransactionsHistory)
+                    closeMenu()
+                },
             )
         }
 
         if (role == UserRole.ADMIN) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.add_expenses)) },
-                onClick = { goto(RouteInfo.AddViewExpense("")); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.AddViewExpense(""))
+                    closeMenu()
+                },
             )
         }
         if (transactions.isNotEmpty()) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.view_expenses)) },
-                onClick = { goto(RouteInfo.ViewExpenses); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.ViewExpenses)
+                    closeMenu()
+                },
             )
         }
         if (role == UserRole.ADMIN) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.pay)) },
-                onClick = { goto(RouteInfo.AddPayment); closeMenu() },
+                onClick = {
+                    goto(RouteInfo.AddPayment)
+                    closeMenu()
+                },
             )
         }
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.view_payments)) },
-            onClick = { goto(RouteInfo.ViewPayments(totalProfit)); closeMenu() },
+            onClick = {
+                goto(RouteInfo.ViewPayments(totalProfit))
+                closeMenu()
+            },
         )
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.sign_out)) },
-            onClick = { signOut(); closeMenu() },
+            onClick = {
+                signOut()
+                closeMenu()
+            },
         )
     }
 }
@@ -236,11 +263,11 @@ fun AnalyticsScreen(
     modifier: Modifier,
 ) {
     Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
     ) {
-
         // Net Profit Summary
         NetProfitCard(financeData.netProfitTillDate, financeData.userProfit)
 
@@ -271,7 +298,5 @@ fun AnalyticsScreen(
         Spacer(modifier = Modifier.height(16.dp))
         ChartSectionTitle("Cumulative Overview")
         CumulativeOverviewChart(financeData.cumulativeOverview)
-
-
     }
 }

@@ -1,15 +1,8 @@
 package com.mab.protprofile.ui.navigation
 
-
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.mab.protprofile.ui.screens.addTransection.AddViewTransactionRoute
-import com.mab.protprofile.ui.screens.addTransection.AddViewTransactionScreen
-import com.mab.protprofile.ui.screens.home.HomeRoute
-import com.mab.protprofile.ui.screens.home.HomeScreen
-import com.mab.protprofile.ui.screens.login.LoginRoute
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,20 +10,21 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.mab.protprofile.data.model.ErrorMessage
 import com.mab.protprofile.data.model.Transaction
-import com.mab.protprofile.ui.Constants
 import com.mab.protprofile.ui.ext.getCustomArg
 import com.mab.protprofile.ui.ext.refresh
 import com.mab.protprofile.ui.screens.addExpense.AddViewExpenseRoute
 import com.mab.protprofile.ui.screens.addExpense.AddViewExpenseScreen
+import com.mab.protprofile.ui.screens.addTransection.AddViewTransactionRoute
+import com.mab.protprofile.ui.screens.addTransection.AddViewTransactionScreen
 import com.mab.protprofile.ui.screens.emaillogin.EmailLoginRoute
 import com.mab.protprofile.ui.screens.emaillogin.EmailLoginScreen
+import com.mab.protprofile.ui.screens.home.HomeRoute
+import com.mab.protprofile.ui.screens.home.HomeScreen
 import com.mab.protprofile.ui.screens.investments.InvestmentSummaryRoute
 import com.mab.protprofile.ui.screens.investments.InvestmentSummaryScreen
-import com.mab.protprofile.ui.screens.transactionsHistory.HistoryRoute
-import com.mab.protprofile.ui.screens.transactionsHistory.HistoryScreen
+import com.mab.protprofile.ui.screens.login.LoginRoute
 import com.mab.protprofile.ui.screens.login.LoginScreen
 import com.mab.protprofile.ui.screens.otp.OtpVerificationRoute
 import com.mab.protprofile.ui.screens.otp.OtpVerificationScreen
@@ -38,13 +32,14 @@ import com.mab.protprofile.ui.screens.pay.PayRoute
 import com.mab.protprofile.ui.screens.pay.PayScreen
 import com.mab.protprofile.ui.screens.payments.PaymentsRoute
 import com.mab.protprofile.ui.screens.payments.PaymentsScreen
+import com.mab.protprofile.ui.screens.transactionsHistory.HistoryRoute
+import com.mab.protprofile.ui.screens.transactionsHistory.HistoryScreen
 import com.mab.protprofile.ui.screens.viewExpenses.ViewExpensesRoute
 import com.mab.protprofile.ui.screens.viewExpenses.ViewExpensesScreen
 import com.mab.protprofile.ui.screens.viewTransactions.ViewTransactionsRoute
 import com.mab.protprofile.ui.screens.viewTransactions.ViewTransactionsScreen
-import java.net.URLDecoder
-import java.net.URLEncoder
 import timber.log.Timber
+import java.net.URLEncoder
 
 @Composable
 fun AppNavGraph(
@@ -80,11 +75,12 @@ fun AppNavGraph(
 
         composable(
             route = ViewTransactionsRoute.DESTINATION,
-            arguments = listOf(
-                navArgument(ViewTransactionsRoute.TRANSACTION_ARG) {
-                    type = NavType.StringType
-                },
-            ),
+            arguments =
+                listOf(
+                    navArgument(ViewTransactionsRoute.TRANSACTION_ARG) {
+                        type = NavType.StringType
+                    },
+                ),
         ) { backStackEntry ->
             val transactions =
                 backStackEntry.getCustomArg<List<Transaction>>(ViewTransactionsRoute.TRANSACTION_ARG)
@@ -182,7 +178,6 @@ fun gotoRoute(route: RouteInfo, navController: NavHostController) {
         }
 
         is RouteInfo.EmailLogin -> {
-
         }
 
         is RouteInfo.Home -> {
@@ -226,4 +221,3 @@ fun gotoRoute(route: RouteInfo, navController: NavHostController) {
         }
     }
 }
-

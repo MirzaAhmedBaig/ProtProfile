@@ -8,18 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mab.protprofile.ui.data.OverviewData
 import com.mab.protprofile.ui.theme.PurchaseCashColor
-import com.mab.protprofile.ui.theme.PurchaseColor
 import com.mab.protprofile.ui.theme.PurchaseCreditColor
-import com.mab.protprofile.ui.theme.SaleColor
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
-import com.patrykandpatrick.vico.compose.cartesian.layer.grouped
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.stacked
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
@@ -54,39 +49,45 @@ fun CashCreditPurchasesChart(data: List<Triple<String, Int, Int>>) {
     Column {
         ChartLegend(
             labels = listOf("Cash", "Credit"),
-            colors = listOf(PurchaseCashColor, PurchaseCreditColor)
+            colors = listOf(PurchaseCashColor, PurchaseCreditColor),
         )
         CartesianChartHost(
-            chart = rememberCartesianChart(
-                rememberColumnCartesianLayer(
-                    mergeMode = { MergeMode.stacked() },
-                    columnCollectionSpacing = 4.dp,
-                    columnProvider = ColumnCartesianLayer.ColumnProvider.series(
-                        rememberLineComponent(fill = fill(PurchaseCashColor), thickness = 15.dp),
-                        rememberLineComponent(fill = fill(PurchaseCreditColor), thickness = 15.dp),
-                    )
-
-                ),
-                startAxis = VerticalAxis.rememberStart(
-                    title = "Rupees",
-                    titleComponent = rememberAxisLabelComponent(
-                        typeface = Typeface.DEFAULT_BOLD
-                    )
-                ),
-                bottomAxis = HorizontalAxis.rememberBottom(
-                    title = "Months",
-                    titleComponent = rememberAxisLabelComponent(
-                        typeface = Typeface.DEFAULT_BOLD
+            chart =
+                rememberCartesianChart(
+                    rememberColumnCartesianLayer(
+                        mergeMode = { MergeMode.stacked() },
+                        columnCollectionSpacing = 4.dp,
+                        columnProvider =
+                            ColumnCartesianLayer.ColumnProvider.series(
+                                rememberLineComponent(fill = fill(PurchaseCashColor), thickness = 15.dp),
+                                rememberLineComponent(fill = fill(PurchaseCreditColor), thickness = 15.dp),
+                            ),
                     ),
-                    valueFormatter = { a, x, b ->
-                        labels.getOrNull(x.toInt()).orEmpty()
-                    }
-                )
-            ),
+                    startAxis =
+                        VerticalAxis.rememberStart(
+                            title = "Rupees",
+                            titleComponent =
+                                rememberAxisLabelComponent(
+                                    typeface = Typeface.DEFAULT_BOLD,
+                                ),
+                        ),
+                    bottomAxis =
+                        HorizontalAxis.rememberBottom(
+                            title = "Months",
+                            titleComponent =
+                                rememberAxisLabelComponent(
+                                    typeface = Typeface.DEFAULT_BOLD,
+                                ),
+                            valueFormatter = { a, x, b ->
+                                labels.getOrNull(x.toInt()).orEmpty()
+                            },
+                        ),
+                ),
             modelProducer = modelProducer,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
             scrollState = rememberVicoScrollState(initialScroll = Scroll.Absolute.End),
         )
     }

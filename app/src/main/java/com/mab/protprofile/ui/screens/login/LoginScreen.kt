@@ -52,7 +52,6 @@ import com.mab.protprofile.ui.theme.ProtProfileTheme
 import kotlinx.serialization.Serializable
 import timber.log.Timber
 
-
 @Serializable
 object LoginRoute
 
@@ -62,8 +61,7 @@ fun LoginScreen(
     goto: (RouteInfo) -> Unit,
     showErrorSnackbar: (ErrorMessage) -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
-
-    ) {
+) {
     Timber.d("LoginScreenContent recomposed")
     val context = LocalContext.current
     val authState by viewModel.authState.collectAsState()
@@ -76,16 +74,17 @@ fun LoginScreen(
         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            focusManager.clearFocus()
-                        },
-                    )
-                }
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                focusManager.clearFocus()
+                            },
+                        )
+                    }
+                    .padding(innerPadding),
         ) {
             val (form) = createRefs()
 
@@ -94,14 +93,15 @@ fun LoginScreen(
             }
 
             Column(
-                modifier = Modifier
-                    .constrainAs(form) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier =
+                    Modifier
+                        .constrainAs(form) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                            height = Dimension.fillToConstraints
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -112,17 +112,19 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                            .padding(horizontal = 24.dp),
                     value = number,
                     prefix = { Text("+91") },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Done,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Done,
+                        ),
                     onValueChange = {
                         if (it.length <= 10) {
                             number = it
@@ -194,6 +196,5 @@ fun LoginScreenPreview() {
                 showErrorSnackbar = {},
             )
         }
-
     }
 }

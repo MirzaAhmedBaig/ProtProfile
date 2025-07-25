@@ -1,6 +1,5 @@
 package com.mab.protprofile.ui.components
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.mab.protprofile.ui.theme.GoodColor
@@ -32,8 +32,9 @@ fun FinanceCard(
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(8.dp),
-        modifier = modifier
-            .padding(4.dp),
+        modifier =
+            modifier
+                .padding(4.dp),
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row(
@@ -59,6 +60,5 @@ fun FinanceCard(
                 )
             }
         }
-
     }
 }

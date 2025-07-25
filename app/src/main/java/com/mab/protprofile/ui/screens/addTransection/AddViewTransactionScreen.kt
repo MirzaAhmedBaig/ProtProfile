@@ -48,9 +48,8 @@ import com.mab.protprofile.ui.components.StandardButton
 import com.mab.protprofile.ui.navigation.RouteInfo
 import com.mab.protprofile.ui.theme.ProtProfileTheme
 import kotlinx.serialization.Serializable
-import java.util.Calendar
 import timber.log.Timber
-
+import java.util.Calendar
 
 @Serializable
 data class AddViewTransactionRoute(val transId: String)
@@ -75,7 +74,6 @@ fun AddViewTransactionScreen(
             showErrorSnackbar = showErrorSnackbar,
             goto = goto,
         )
-
     }
 }
 
@@ -108,7 +106,6 @@ fun AddEntryScreenLoad(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEntryScreenContent(
@@ -128,7 +125,7 @@ fun AddEntryScreenContent(
             CenterTopAppBar(
                 title = stringResource(titleStringId.intValue),
                 actions = {
-                    if (role == UserRole.ADMIN)
+                    if (role == UserRole.ADMIN) {
                         GetToBarMenu(
                             onClick = {
                                 Timber.d("Edit button clicked")
@@ -137,25 +134,26 @@ fun AddEntryScreenContent(
                             },
                             editEnabled.value,
                         )
+                    }
                 },
                 onBack = { goto(RouteInfo.OnBack()) },
             )
         },
     ) { innerPadding ->
         ConstraintLayout(
-            modifier = Modifier
-                .padding(innerPadding)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            focusManager.clearFocus()
-                        },
-                    )
-                }
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                focusManager.clearFocus()
+                            },
+                        )
+                    }
+                    .fillMaxSize(),
         ) {
             val editableTransaction = remember { mutableStateOf(transaction) }
-
 
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
             val years = (currentYear - 1)..(currentYear)
@@ -168,22 +166,24 @@ fun AddEntryScreenContent(
             val (form) = createRefs()
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 24.dp)
-                    .constrainAs(form) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    },
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 24.dp)
+                        .constrainAs(form) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -191,8 +191,9 @@ fun AddEntryScreenContent(
                         label = "Month",
                         options = months,
                         editable = transaction.id.isBlank(),
-                        selectedOption = editableTransaction.value.transactionMonth?.toString()
-                            ?: "",
+                        selectedOption =
+                            editableTransaction.value.transactionMonth?.toString()
+                                ?: "",
                         onOptionSelected = {
                             editableTransaction.value =
                                 editableTransaction.value.copy(transactionMonth = it.toInt())
@@ -200,8 +201,7 @@ fun AddEntryScreenContent(
                         expanded = showMonthMenu,
                         onExpandedChange = { showMonthMenu = it },
                         modifier = Modifier.weight(1f),
-
-                        )
+                    )
 
                     Spacer(Modifier.size(16.dp))
 
@@ -209,8 +209,9 @@ fun AddEntryScreenContent(
                         label = "Year",
                         options = years.map { it.toString() },
                         editable = transaction.id.isBlank(),
-                        selectedOption = editableTransaction.value.transactionYear?.toString()
-                            ?: "",
+                        selectedOption =
+                            editableTransaction.value.transactionYear?.toString()
+                                ?: "",
                         onOptionSelected = {
                             editableTransaction.value =
                                 editableTransaction.value.copy(transactionYear = it.toInt())
@@ -218,8 +219,7 @@ fun AddEntryScreenContent(
                         expanded = showYearMenu,
                         onExpandedChange = { showYearMenu = it },
                         modifier = Modifier.weight(1f),
-
-                        )
+                    )
                 }
 
                 OutlinedTextField(
@@ -228,16 +228,19 @@ fun AddEntryScreenContent(
                         editableTransaction.value =
                             editableTransaction.value.copy(totalSale = it.toIntOrNull())
                     },
-                    isError = editableTransaction.value.totalSale?.toString()
-                        .isNullOrBlank() && isSubmitted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    isError =
+                        editableTransaction.value.totalSale?.toString()
+                            .isNullOrBlank() && isSubmitted,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     label = { Text("Total Sale") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                     singleLine = true,
                     readOnly = !editEnabled.value,
                 )
@@ -250,16 +253,19 @@ fun AddEntryScreenContent(
                                 totalPurchase = it.toIntOrNull(),
                             )
                     },
-                    isError = editableTransaction.value.totalPurchase?.toString()
-                        .isNullOrBlank() && isSubmitted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    isError =
+                        editableTransaction.value.totalPurchase?.toString()
+                            .isNullOrBlank() && isSubmitted,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     label = { Text("Total Purchase") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                     singleLine = true,
                     readOnly = !editEnabled.value,
                 )
@@ -272,16 +278,19 @@ fun AddEntryScreenContent(
                                 creditPurchase = it.toIntOrNull(),
                             )
                     },
-                    isError = editableTransaction.value.creditPurchase?.toString()
-                        .isNullOrBlank() && isSubmitted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    isError =
+                        editableTransaction.value.creditPurchase?.toString()
+                            .isNullOrBlank() && isSubmitted,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     label = { Text("Credit Purchase") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                     singleLine = true,
                     readOnly = !editEnabled.value,
                 )
@@ -294,16 +303,19 @@ fun AddEntryScreenContent(
                                 totalExpense = it.toIntOrNull(),
                             )
                     },
-                    isError = editableTransaction.value.totalExpense?.toString()
-                        .isNullOrBlank() && isSubmitted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    isError =
+                        editableTransaction.value.totalExpense?.toString()
+                            .isNullOrBlank() && isSubmitted,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     label = { Text("Total Expense") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                     singleLine = true,
                     readOnly = !editEnabled.value,
                 )
@@ -314,11 +326,13 @@ fun AddEntryScreenContent(
                         editableTransaction.value =
                             editableTransaction.value.copy(totalProfit = it.toIntOrNull())
                     },
-                    isError = editableTransaction.value.totalProfit?.toString()
-                        .isNullOrBlank() && isSubmitted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    isError =
+                        editableTransaction.value.totalProfit?.toString()
+                            .isNullOrBlank() && isSubmitted,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text("Total Profit") },
                     singleLine = true,
@@ -327,10 +341,9 @@ fun AddEntryScreenContent(
 
                 Spacer(Modifier.size(16.dp))
 
-                if (editEnabled.value)
+                if (editEnabled.value) {
                     StandardButton(
                         label = R.string.submit,
-
                         onButtonClick = {
                             isSubmitted = true
 
@@ -348,11 +361,10 @@ fun AddEntryScreenContent(
                                 Timber.i("Validation successful, saving transaction: ${editableTransaction.value}")
                                 saveTransaction(editableTransaction.value, showErrorSnackbar)
                             }
-
                         },
                     )
+                }
             }
-
         }
     }
 }
