@@ -1,6 +1,5 @@
 package com.mab.protprofile.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,22 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mab.protprofile.data.model.Expense
+import com.mab.protprofile.data.model.Payment
 import com.mab.protprofile.ui.theme.BadColor
-import com.mab.protprofile.ui.theme.ExpenseColor
 import com.mab.protprofile.ui.utils.monthName
 
 @Composable
-fun ExpenseItem(expense: Expense, onEdit: (String) -> Unit) {
+fun PaymentItem(payment: Payment, enablePaidTo: Boolean) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
-                onClick = {
-                    onEdit(expense.id)
-                },
-            )
-            .padding(8.dp),
+            .padding(4.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(12.dp),
 
@@ -42,21 +35,18 @@ fun ExpenseItem(expense: Expense, onEdit: (String) -> Unit) {
 
 
         Column(modifier = Modifier.padding(16.dp)) {
-            val totalExpense = expense.expenses.values.sum()
-            val expensesKind = expense.expenses.keys.joinToString(", ")
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "${monthName(expense.expenseMonth)} ${expense.expenseYear}",
+                    text = "${monthName(payment.paymentMonth)} ${payment.paymentYear}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "₹$totalExpense",
+                    text = "₹${payment.amount}",
                     color = BadColor,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
@@ -65,14 +55,17 @@ fun ExpenseItem(expense: Expense, onEdit: (String) -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            if (enablePaidTo) {
+                Text(
+                    text = "Paid To: ${payment.paidTo}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.DarkGray,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             Text(
-                text = "Expenses: $expensesKind",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.DarkGray,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Updated By: ${expense.updatedBy}",
+                text = "Paid By: ${payment.addedBy}",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray,
             )

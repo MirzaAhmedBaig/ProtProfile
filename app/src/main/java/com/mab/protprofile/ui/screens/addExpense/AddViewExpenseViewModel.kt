@@ -86,13 +86,14 @@ constructor(
                         updatedBy = userName,
                     )
                 dataRepository.createExpense(newExpense)
+                _navigateToHome.value = true
                 Timber.d("New expense created: $newExpense")
             } else {
                 Timber.d("Updating existing expense with id: $expenseId")
                 dataRepository.updateExpense(expense)
+                _navigateToHome.value = true
                 Timber.d("Expense updated.")
             }
-            _navigateToHome.value = true
             Timber.d("saveExpense completed. Navigating to home.")
         }
     }

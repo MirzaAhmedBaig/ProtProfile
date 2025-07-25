@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,21 +18,25 @@ import com.mab.protprofile.ui.theme.DarkBlue
 
 @Composable
 fun StandardButton(@StringRes label: Int, onButtonClick: () -> Unit) {
+    val focusManager = LocalFocusManager.current
     OutlinedButton(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp),
-        onClick = onButtonClick,
+        onClick = {
+            focusManager.clearFocus()
+            onButtonClick()
+        },
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = DarkBlue,
-            contentColor = Color.White
+            contentColor = Color.White,
         ),
-        border = BorderStroke(1.dp, DarkBlue)
+        border = BorderStroke(1.dp, DarkBlue),
     ) {
         Text(
             text = stringResource(label),
             fontSize = 16.sp,
-            modifier = Modifier.padding(vertical = 6.dp)
+            modifier = Modifier.padding(vertical = 6.dp),
         )
     }
 }

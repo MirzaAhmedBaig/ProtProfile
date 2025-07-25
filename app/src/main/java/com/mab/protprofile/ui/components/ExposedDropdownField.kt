@@ -2,6 +2,8 @@ package com.mab.protprofile.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -30,10 +32,12 @@ fun ExposedDropdownField(
         onExpandedChange(!expanded)
     }) {
         OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = selectedOption ?: "",
             onValueChange = {},
             label = { Text(label) },
             readOnly = true,
+            singleLine = true,
             enabled = editable,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             trailingIcon = {

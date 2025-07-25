@@ -55,7 +55,7 @@ fun TransactionItem(transaction: Transaction, onEdit: (String) -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Net Profit : $netProfit",
+                    text = "Net Profit : ₹$netProfit",
                     color = color,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold

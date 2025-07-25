@@ -7,10 +7,11 @@ import com.mab.protprofile.BuildConfig
 import com.mab.protprofile.data.model.AppConfigs
 import com.mab.protprofile.data.model.Expense
 import com.mab.protprofile.data.model.InvestmentSummary
+import com.mab.protprofile.data.model.Payment
 import com.mab.protprofile.data.model.Transaction
 import com.mab.protprofile.data.model.TransactionHistory
 import com.mab.protprofile.data.model.UserInfo
-import com.mab.protprofile.exceptions.IdAlreadyExistsException
+import com.mab.protprofile.exceptions.ItemAlreadyExistsException
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -56,15 +57,16 @@ constructor(
         try {
             getTransaction(transId)?.let {
                 Timber.w("Transaction with id: $transId already exists.")
-                throw IdAlreadyExistsException(transId)
+                throw ItemAlreadyExistsException("Entry already added for given month and year")
             }
+            Timber.e("Error code")
             firestore
                 .collection(TRANSACTIONS_COLLECTION)
                 .document(transaction.id)
                 .set(transaction)
                 .await()
             Timber.i("Transaction with id: ${transaction.id} created successfully.")
-        } catch (e: IdAlreadyExistsException) {
+        } catch (e: ItemAlreadyExistsException) {
             throw e
         } catch (e: Exception) {
             Timber.e(e, "Error creating transaction with id: ${transaction.id}")
@@ -213,7 +215,7 @@ constructor(
         try {
             getExpense(expenseId)?.let {
                 Timber.w("Expense with id: $expenseId already exists.")
-                throw IdAlreadyExistsException(expenseId)
+                throw ItemAlreadyExistsException("Entry already added for given month and year")
             }
             firestore
                 .collection(EXPENSES)
@@ -221,7 +223,7 @@ constructor(
                 .set(expense)
                 .await()
             Timber.i("Expense with id: ${expense.id} created successfully.")
-        } catch (e: IdAlreadyExistsException) {
+        } catch (e: ItemAlreadyExistsException) {
             throw e
         } catch (e: Exception) {
             Timber.e(e, "Error creating expense with id: ${expense.id}")
@@ -243,11 +245,64 @@ constructor(
         }
     }
 
+    suspend fun getPayment(paymentId: String): Payment? {
+        Timber.d("Fetching payment with id: $paymentId")
+        return try {
+            firestore
+                .collection(PAYMENTS)
+                .document(paymentId)
+                .get()
+                .await()
+                .toObject<Payment>()
+        } catch (e: Exception) {
+            Timber.e(e, "Error fetching payment with id: $paymentId")
+            null
+        }
+    }
+
+    suspend fun getPayments(): List<Payment> {
+        Timber.d("Fetching all payments")
+        return try {
+            firestore
+                .collection(PAYMENTS)
+                .get()
+                .await()
+                ?.toObjects<Payment>()
+                ?: emptyList<Payment>().also { Timber.w("No payments found, returning empty list.") }
+        } catch (e: Exception) {
+            Timber.e(e, "Error fetching payments")
+            emptyList()
+        }
+    }
+
+    suspend fun createPayment(payment: Payment) {
+        Timber.d("Attempting to create payment with id: ${payment.id}")
+        val paymentId = payment.id
+        try {
+            getPayment(paymentId)?.let {
+                Timber.w("payment with id: $paymentId already exists.")
+                throw ItemAlreadyExistsException("Entry already added for given month and year")
+            }
+            firestore
+                .collection(PAYMENTS)
+                .document(payment.id)
+                .set(payment)
+                .await()
+            Timber.i("payment with id: ${payment.id} created successfully.")
+        } catch (e: ItemAlreadyExistsException) {
+            throw e
+        } catch (e: Exception) {
+            Timber.e(e, "Error creating payment with id: ${payment.id}")
+            throw e
+        }
+    }
+
     companion object {
         private const val TRANSACTIONS_COLLECTION = "transactions-${BuildConfig.BUILD_TYPE}"
         private const val TRANSACTIONS_HISTORY_COLLECTION =
             "transactions-history-${BuildConfig.BUILD_TYPE}"
         private const val EXPENSES = "expenses-${BuildConfig.BUILD_TYPE}"
+        private const val PAYMENTS = "payments-${BuildConfig.BUILD_TYPE}"
 
         // Universal
         private const val USER_INFO = "user-info"

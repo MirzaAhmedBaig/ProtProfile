@@ -1,7 +1,10 @@
 package com.mab.protprofile.ui.screens.addExpense
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +21,9 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,8 +39,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -125,6 +134,7 @@ fun AddExpenseScreenContent(
     saveExpense: (Expense, (ErrorMessage) -> Unit) -> Unit,
 ) {
     Timber.d("AddExpenseScreenContent called with Expense: $Expense, role: $role")
+    val focusManager = LocalFocusManager.current
     val editAllowed = role == UserRole.ADMIN
     val titleStringId =
         remember { mutableIntStateOf(if (expense.id.isBlank()) R.string.add_expenses else R.string.expenses) }
@@ -139,6 +149,13 @@ fun AddExpenseScreenContent(
         ConstraintLayout(
             modifier = Modifier
                 .padding(innerPadding)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        },
+                    )
+                }
                 .fillMaxSize(),
         ) {
             val editableExpense = remember { mutableStateOf(expense) }
@@ -293,6 +310,38 @@ fun AddExpenseScreenContent(
                         }
                     }
                 }
+
+                if (editableItemList.size > 1)
+                    Row(
+                        modifier = Modifier
+                            .padding(24.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                shape = OutlinedTextFieldDefaults.shape,
+                            )
+                            .fillMaxWidth(),
+                    ) {
+                        Text(
+                            "Total",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f),
+                        )
+                        Text(
+                            "${
+                                editableItemList.filter { it.amount != null }.sumOf { it.amount!! }
+                            }",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f),
+                        )
+                    }
 
                 OutlinedTextField(
                     value = editableExpense.value.notes ?: "",

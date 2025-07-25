@@ -28,6 +28,10 @@
     <string name="add_expenses">Add Expenses</string>
     <string name="view_expenses">View Expenses</string>
     <string name="expenses">Expenses</string>
+    <string name="pay">Pay</string>
+    <string name="view_payments">View Payments</string>
+    <string name="add_payment">Add Payment</string>
+    <string name="payments">Payments</string>
 
 
 </resources>

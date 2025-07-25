@@ -34,6 +34,10 @@ import com.mab.protprofile.ui.screens.transactionsHistory.HistoryScreen
 import com.mab.protprofile.ui.screens.login.LoginScreen
 import com.mab.protprofile.ui.screens.otp.OtpVerificationRoute
 import com.mab.protprofile.ui.screens.otp.OtpVerificationScreen
+import com.mab.protprofile.ui.screens.pay.PayRoute
+import com.mab.protprofile.ui.screens.pay.PayScreen
+import com.mab.protprofile.ui.screens.payments.PaymentsRoute
+import com.mab.protprofile.ui.screens.payments.PaymentsScreen
 import com.mab.protprofile.ui.screens.viewExpenses.ViewExpensesRoute
 import com.mab.protprofile.ui.screens.viewExpenses.ViewExpensesScreen
 import com.mab.protprofile.ui.screens.viewTransactions.ViewTransactionsRoute
@@ -140,6 +144,20 @@ fun AppNavGraph(
                 goto = { gotoRoute(it, navController = navController) },
             )
         }
+
+        composable<PayRoute> {
+            PayScreen(
+                showErrorSnackbar = showErrorSnackbar,
+                goto = { gotoRoute(it, navController = navController) },
+            )
+        }
+
+        composable<PaymentsRoute> {
+            PaymentsScreen(
+                showErrorSnackbar = showErrorSnackbar,
+                goto = { gotoRoute(it, navController = navController) },
+            )
+        }
     }
 }
 
@@ -197,6 +215,14 @@ fun gotoRoute(route: RouteInfo, navController: NavHostController) {
 
         is RouteInfo.TransactionsHistory -> {
             navController.navigate(HistoryRoute)
+        }
+
+        is RouteInfo.AddPayment -> {
+            navController.navigate(PayRoute)
+        }
+
+        is RouteInfo.ViewPayments -> {
+            navController.navigate(PaymentsRoute(route.totalProfit))
         }
     }
 }

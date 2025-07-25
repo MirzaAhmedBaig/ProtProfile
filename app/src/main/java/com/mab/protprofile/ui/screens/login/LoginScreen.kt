@@ -159,7 +159,6 @@ fun LoginScreen(
                         StandardButton(
                             label = R.string.sign_in,
                             onButtonClick = {
-                                focusManager.clearFocus()
                                 Timber.d("Sign in button clicked")
                                 if (number.isBlank() || number.length < 10) {
                                     Timber.w("Invalid Mobile Number, showing error.")

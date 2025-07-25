@@ -44,6 +44,7 @@ class HomeViewModel
         val userInfo: StateFlow<UserInfo?>
             get() = _userInfo.asStateFlow()
 
+
         fun signOut(showErrorSnackbar: (ErrorMessage) -> Unit) {
             Timber.i("signOut called")
             launchCatching(showErrorSnackbar) {

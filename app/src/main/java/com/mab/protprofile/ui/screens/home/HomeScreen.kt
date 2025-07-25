@@ -119,7 +119,7 @@ fun HomeScreenContent(
                     MoreTasksMenu(
                         transactions = transactions,
                         totalProfit = financeData?.netProfitTillDate ?: 0,
-                        userInfo.role,
+                        userInfo,
                         goto = goto,
                         signOut = signOut,
                     )
@@ -168,10 +168,12 @@ fun HomeScreenContent(
 private fun MoreTasksMenu(
     transactions: List<Transaction>,
     totalProfit: Int,
-    role: UserRole,
+    userInfo: UserInfo,
     goto: (RouteInfo) -> Unit,
     signOut: () -> Unit,
 ) {
+    val role = userInfo.role
+    val userName = userInfo.name
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_more))
@@ -211,6 +213,16 @@ private fun MoreTasksMenu(
                 onClick = { goto(RouteInfo.ViewExpenses); closeMenu() },
             )
         }
+        if (role == UserRole.ADMIN) {
+            DropdownMenuItem(
+                text = { Text(text = stringResource(id = R.string.pay)) },
+                onClick = { goto(RouteInfo.AddPayment); closeMenu() },
+            )
+        }
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.view_payments)) },
+            onClick = { goto(RouteInfo.ViewPayments(totalProfit)); closeMenu() },
+        )
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.sign_out)) },
             onClick = { signOut(); closeMenu() },

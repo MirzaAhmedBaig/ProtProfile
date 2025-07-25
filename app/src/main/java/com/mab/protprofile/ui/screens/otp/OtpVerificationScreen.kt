@@ -155,7 +155,6 @@ fun OtpVerificationScreen(
                         StandardButton(
                             label = R.string.verify,
                             onButtonClick = {
-                                focusManager.clearFocus()
                                 Timber.d("Verify button clicked with OTP: $otp")
                                 if (otp.isBlank() || otp.length < 6) {
                                     Timber.w("Invalid OTP, showing error.")

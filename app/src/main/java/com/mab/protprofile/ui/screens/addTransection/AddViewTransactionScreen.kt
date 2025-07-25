@@ -1,5 +1,6 @@
 package com.mab.protprofile.ui.screens.addTransection
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -116,6 +119,7 @@ fun AddEntryScreenContent(
     saveTransaction: (Transaction, (ErrorMessage) -> Unit) -> Unit,
 ) {
     Timber.d("AddEntryScreenContent called with transaction: $transaction, role: $role")
+    val focusManager = LocalFocusManager.current
     val editEnabled = remember { mutableStateOf(transaction.id.isBlank()) }
     val titleStringId =
         remember { mutableIntStateOf(if (transaction.id.isBlank()) R.string.add_new_month else R.string.details) }
@@ -141,6 +145,13 @@ fun AddEntryScreenContent(
         ConstraintLayout(
             modifier = Modifier
                 .padding(innerPadding)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        },
+                    )
+                }
                 .fillMaxSize(),
         ) {
             val editableTransaction = remember { mutableStateOf(transaction) }
