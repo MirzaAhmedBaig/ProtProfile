@@ -17,85 +17,89 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaymentsViewModel
-    @Inject
-    constructor(
-        savedStateHandle: SavedStateHandle,
-        private val authRepository: AuthRepository,
-        private val dataRepository: MyDataRepository,
-    ) : MainViewModel() {
-        init {
-            Timber.d("PaymentsViewModel initialized")
-        }
+@Inject
+constructor(
+    savedStateHandle: SavedStateHandle,
+    private val authRepository: AuthRepository,
+    private val dataRepository: MyDataRepository,
+) : MainViewModel() {
+    init {
+        Timber.d("PaymentsViewModel initialized")
+    }
 
-        private val route = savedStateHandle.toRoute<PaymentsRoute>()
-        private val totalProfit: Int = route.totalProfit
+    private val route = savedStateHandle.toRoute<PaymentsRoute>()
+    private val totalProfit: Int = route.totalProfit
 
-        private val _paymentsInfo = MutableStateFlow<PaymentsScreenInfo?>(null)
-        val paymentInfo: StateFlow<PaymentsScreenInfo?>
-            get() = _paymentsInfo.asStateFlow()
+    private val _paymentsInfo = MutableStateFlow<PaymentsScreenInfo?>(null)
+    val paymentInfo: StateFlow<PaymentsScreenInfo?>
+        get() = _paymentsInfo.asStateFlow()
 
-        fun fetchPayments(showErrorSnackbar: (ErrorMessage) -> Unit) {
-            launchCatching(showErrorSnackbar) {
-                val payments = dataRepository.gePayments()
-                val users = dataRepository.getUsers()
+    fun fetchPayments(showErrorSnackbar: (ErrorMessage) -> Unit) {
+        launchCatching(showErrorSnackbar) {
+            val payments = dataRepository.gePayments()
+            val users = dataRepository.getUsers()
 
-                Timber.i("Fetched all payments")
+            Timber.i("Fetched all payments")
 
-                val currentUser = users.first { it.number == authRepository.currentUser?.phoneNumber }
-                val myPayments = payments.filter { it.paidTo == currentUser.name }
-                val childUser = users.first { it.parent == false }
+            val currentUser = users.first { it.number == authRepository.currentUser?.phoneNumber }
+            val myPayments = payments.filter { it.paidTo == currentUser.name }
+            val childUser = users.first { it.parent == false }
 
-                val totalNetProfit =
-                    if (currentUser.parent == true) {
-                        totalProfit * (currentUser.sharePercent + childUser.sharePercent)
-                    } else {
-                        totalProfit * currentUser.sharePercent
-                    }
+            val totalNetProfit =
+                if (currentUser.parent == true) {
+                    totalProfit * (currentUser.sharePercent + childUser.sharePercent)
+                } else {
+                    totalProfit * currentUser.sharePercent
+                }
 
-                val allPayments =
+            val allPayments =
+                if (currentUser.parent == true) {
+                    payments
+                } else {
                     if (currentUser.role == UserRole.USER) {
                         myPayments
                     } else {
-                        payments
+                        payments.filter { it.paidTo != childUser.name }
                     }
+                }
 
-                val childPartnerProfitReceived =
-                    if (currentUser.parent == true) {
-                        allPayments.filter { it.paidTo == childUser.name }.sumOf { it.amount!! }
-                    } else {
-                        null
-                    }
+            val childPartnerProfitReceived =
+                if (currentUser.parent == true) {
+                    allPayments.filter { it.paidTo == childUser.name }.sumOf { it.amount!! }
+                } else {
+                    null
+                }
 
-                val parentProfit =
-                    if (currentUser.parent == true) {
-                        (totalProfit * currentUser.sharePercent).toInt()
-                    } else {
-                        null
-                    }
+            val parentProfit =
+                if (currentUser.parent == true) {
+                    (totalProfit * currentUser.sharePercent).toInt()
+                } else {
+                    null
+                }
 
-                val profitReceived =
-                    if (childPartnerProfitReceived != null) {
-                        myPayments.sumOf { it.amount!! } - childPartnerProfitReceived
-                    } else {
-                        myPayments.sumOf { it.amount!! }
-                    }
+            val profitReceived =
+                if (childPartnerProfitReceived != null) {
+                    myPayments.sumOf { it.amount!! } - childPartnerProfitReceived
+                } else {
+                    myPayments.sumOf { it.amount!! }
+                }
 
-                val outstandingProfit = totalNetProfit.toInt() - myPayments.sumOf { it.amount!! }
+            val outstandingProfit = totalNetProfit.toInt() - myPayments.sumOf { it.amount!! }
 
-                _paymentsInfo.value =
-                    PaymentsScreenInfo(
-                        totalProfit = totalNetProfit.toInt(),
-                        parentProfit = parentProfit,
-                        profitReceived = profitReceived,
-                        outstandingProfit = outstandingProfit,
-                        childPartnerProfitReceived = childPartnerProfitReceived,
-                        payments = allPayments,
-                    )
-            }
-        }
-
-        override fun onCleared() {
-            super.onCleared()
-            Timber.d("PaymentsViewModel cleared")
+            _paymentsInfo.value =
+                PaymentsScreenInfo(
+                    totalProfit = totalNetProfit.toInt(),
+                    parentProfit = parentProfit,
+                    profitReceived = profitReceived,
+                    outstandingProfit = outstandingProfit,
+                    childPartnerProfitReceived = childPartnerProfitReceived,
+                    payments = allPayments,
+                )
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.d("PaymentsViewModel cleared")
+    }
+}

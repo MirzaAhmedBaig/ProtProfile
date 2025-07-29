@@ -51,7 +51,7 @@ class PayViewModel
             launchCatching(showErrorSnackbar) {
                 val paymentData =
                     payment.copy(
-                        id = "${payment.paymentMonth}:${payment.paymentYear}:${currentUser.name}",
+                        id = "${payment.paymentMonth}:${payment.paymentYear}:${payment.paidTo}",
                         date = getCurrentDateTimeString(),
                         addedBy = currentUser.name,
                     )

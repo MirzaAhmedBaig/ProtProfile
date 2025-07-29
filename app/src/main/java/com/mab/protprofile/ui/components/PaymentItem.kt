@@ -23,7 +23,7 @@ import com.mab.protprofile.ui.theme.BadColor
 import com.mab.protprofile.ui.utils.monthName
 
 @Composable
-fun PaymentItem(payment: Payment, enablePaidTo: Boolean) {
+fun PaymentItem(payment: Payment, enablePaidTo: Boolean = true) {
     Card(
         modifier =
             Modifier

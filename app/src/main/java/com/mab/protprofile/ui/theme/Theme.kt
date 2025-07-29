@@ -53,7 +53,7 @@ fun ProtProfileTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = NonScaledTypography(),
         content = content,
     )
 }

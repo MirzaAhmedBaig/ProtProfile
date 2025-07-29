@@ -1,8 +1,12 @@
 package com.mab.protprofile.ui.screens.home
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -31,6 +35,7 @@ import com.mab.protprofile.data.model.Transaction
 import com.mab.protprofile.data.model.UserInfo
 import com.mab.protprofile.data.model.UserRole
 import com.mab.protprofile.ui.components.CenterTopAppBar
+import com.mab.protprofile.ui.components.FinanceCard
 import com.mab.protprofile.ui.components.LoadingIndicator
 import com.mab.protprofile.ui.components.TopAppBarDropdownMenu
 import com.mab.protprofile.ui.components.graphs.CashCreditPurchasesChart
@@ -39,11 +44,11 @@ import com.mab.protprofile.ui.components.graphs.CumulativeOverviewChart
 import com.mab.protprofile.ui.components.graphs.ExpensesChart
 import com.mab.protprofile.ui.components.graphs.GrossNetProfitChart
 import com.mab.protprofile.ui.components.graphs.HighlightsSection
-import com.mab.protprofile.ui.components.graphs.NetProfitCard
 import com.mab.protprofile.ui.components.graphs.NetProfitTrendChart
 import com.mab.protprofile.ui.components.graphs.SalesPurchasesChart
 import com.mab.protprofile.ui.data.FinanceData
 import com.mab.protprofile.ui.navigation.RouteInfo
+import com.mab.protprofile.ui.theme.GoodColor
 import kotlinx.serialization.Serializable
 import timber.log.Timber
 
@@ -157,6 +162,7 @@ fun HomeScreenContent(
                                 end.linkTo(parent.end)
                                 height = Dimension.fillToConstraints
                             },
+                    goto = goto,
                 )
             }
         }
@@ -172,20 +178,20 @@ private fun MoreTasksMenu(
     signOut: () -> Unit,
 ) {
     val role = userInfo.role
-    val userName = userInfo.name
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_more))
         },
     ) { closeMenu ->
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.investment_summary)) },
+            onClick = {
+                goto(RouteInfo.InvestmentSummary(totalProfit))
+                closeMenu()
+            },
+        )
+
         if (role == UserRole.ADMIN) {
-            DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.investment_summary)) },
-                onClick = {
-                    goto(RouteInfo.InvestmentSummary(totalProfit))
-                    closeMenu()
-                },
-            )
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.add_transaction)) },
                 onClick = {
@@ -261,6 +267,7 @@ private fun MoreTasksMenu(
 fun AnalyticsScreen(
     financeData: FinanceData,
     modifier: Modifier,
+    goto: (RouteInfo) -> Unit,
 ) {
     Column(
         modifier =
@@ -269,7 +276,29 @@ fun AnalyticsScreen(
                 .padding(16.dp),
     ) {
         // Net Profit Summary
-        NetProfitCard(financeData.netProfitTillDate, financeData.userProfit)
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            FinanceCard(
+                modifier =
+                    Modifier
+                        .weight(1f),
+                title = "Net Profit",
+                amount = "₹${financeData.netProfitTillDate}",
+                valueColor = GoodColor,
+                icon = R.drawable.net_profit,
+            )
+            FinanceCard(
+                modifier =
+                    Modifier
+                        .clickable {
+                            goto(RouteInfo.ViewPayments(financeData.netProfitTillDate))
+                        }
+                        .weight(1f),
+                title = "Your Share",
+                amount = "₹${financeData.userProfit}",
+                valueColor = GoodColor,
+                icon = R.drawable.share_profit,
+            )
+        }
 
         if (financeData.highlightMonths.size > 1) {
             HighlightsSection(financeData.highlightMonths)

@@ -230,7 +230,7 @@ fun PaymentsScreenContent(
 
                 allPayments.value.forEach { payment ->
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        PaymentItem(payment, paymentInfo.childPartnerProfitReceived != null)
+                        PaymentItem(payment)
                     }
                 }
             }

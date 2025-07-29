@@ -26,16 +26,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mab.protprofile.data.model.ErrorMessage
 
-sealed class ExpenseState() {
-    object Edition : ExpenseState()
-
-    object Saved : ExpenseState()
-
-    object Cleared : ExpenseState()
-}
-
 @Composable
 fun SingleExpenseItem(
+    modifier: Modifier,
     expenseTypes: List<String>,
     expense: String = "",
     amount: Int? = null,
@@ -48,7 +41,7 @@ fun SingleExpenseItem(
 
     Row(
         modifier =
-            Modifier
+            modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,

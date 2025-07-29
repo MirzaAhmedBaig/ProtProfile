@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +49,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mab.protprofile.R
@@ -146,6 +150,7 @@ fun AddExpenseScreenContent(
         ConstraintLayout(
             modifier =
                 Modifier
+                    .fillMaxSize()
                     .padding(innerPadding)
                     .pointerInput(Unit) {
                         detectTapGestures(
@@ -153,8 +158,7 @@ fun AddExpenseScreenContent(
                                 focusManager.clearFocus()
                             },
                         )
-                    }
-                    .fillMaxSize(),
+                    },
         ) {
             val editableExpense = remember { mutableStateOf(expense) }
 
@@ -187,7 +191,7 @@ fun AddExpenseScreenContent(
 
             val (form) = createRefs()
 
-            Column(
+            LazyColumn(
                 modifier =
                     Modifier
                         .fillMaxSize()
@@ -197,65 +201,104 @@ fun AddExpenseScreenContent(
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
+                            height = Dimension.fillToConstraints
                         },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    ExposedDropdownField(
-                        label = "Month",
-                        options = months,
-                        editable = expense.id.isBlank(),
-                        selectedOption =
-                            editableExpense.value.expenseMonth?.toString()
-                                ?: "",
-                        onOptionSelected = {
-                            editableExpense.value =
-                                editableExpense.value.copy(expenseMonth = it.toInt())
-                        },
-                        expanded = showMonthMenu,
-                        onExpandedChange = { showMonthMenu = it },
-                        modifier = Modifier.weight(1f),
-                    )
+                item {
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        ExposedDropdownField(
+                            label = "Month",
+                            options = months,
+                            editable = expense.id.isBlank(),
+                            selectedOption =
+                                editableExpense.value.expenseMonth?.toString()
+                                    ?: "",
+                            onOptionSelected = {
+                                editableExpense.value =
+                                    editableExpense.value.copy(expenseMonth = it.toInt())
+                            },
+                            expanded = showMonthMenu,
+                            onExpandedChange = { showMonthMenu = it },
+                            modifier = Modifier.weight(1f),
+                        )
 
-                    Spacer(Modifier.size(16.dp))
+                        Spacer(Modifier.size(16.dp))
 
-                    ExposedDropdownField(
-                        label = "Year",
-                        options = years.map { it.toString() },
-                        editable = expense.id.isBlank(),
-                        selectedOption =
-                            editableExpense.value.expenseYear?.toString()
-                                ?: "",
-                        onOptionSelected = {
-                            editableExpense.value =
-                                editableExpense.value.copy(expenseYear = it.toInt())
-                        },
-                        expanded = showYearMenu,
-                        onExpandedChange = { showYearMenu = it },
-                        modifier = Modifier.weight(1f),
-                    )
+                        ExposedDropdownField(
+                            label = "Year",
+                            options = years.map { it.toString() },
+                            editable = expense.id.isBlank(),
+                            selectedOption =
+                                editableExpense.value.expenseYear?.toString()
+                                    ?: "",
+                            onOptionSelected = {
+                                editableExpense.value =
+                                    editableExpense.value.copy(expenseYear = it.toInt())
+                            },
+                            expanded = showYearMenu,
+                            onExpandedChange = { showYearMenu = it },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
                 }
 
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
-                ) {
-                    itemsIndexed(
-                        editableItemList,
-                        key = { index, item -> item.name + (item.amount?.toString() ?: "null") },
-                    ) { index, item ->
-                        if (item.name.isBlank() || !editAllowed) {
+                itemsIndexed(
+                    editableItemList,
+                    key = { index, item -> item.name + (item.amount?.toString() ?: "null") },
+                ) { index, item ->
+                    if (item.name.isBlank() || !editAllowed) {
+                        SingleExpenseItem(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            expenseTypes = expenseTypes,
+                            expense = item.name,
+                            amount = item.amount,
+                            showErrorSnackbar = showErrorSnackbar,
+                            onSave = { name, amount ->
+                                if (editableItemList.map { it.name }.contains(name)) {
+                                    editableItemList.removeIf { it.name == name }
+                                }
+                                editableItemList.add(ExpenseItem(name, amount))
+                                Timber.d("onSaved : $editableItemList")
+                            },
+                        )
+                    } else {
+                        SwipeableItemWithActions(
+                            isRevealed = item.isOptionsRevealed,
+                            onExpanded = {
+                                editableItemList[index] = item.copy(isOptionsRevealed = true)
+                            },
+                            onCollapsed = {
+                                editableItemList[index] = item.copy(isOptionsRevealed = false)
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = {
+                                        editableItemList.remove(item)
+                                    },
+                                    modifier =
+                                        Modifier
+                                            .clip(CircleShape)
+                                            .background(Color.Red),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete",
+                                        tint = Color.White,
+                                    )
+                                }
+                            },
+                        ) {
                             SingleExpenseItem(
+                                modifier = Modifier.padding(horizontal = 24.dp),
                                 expenseTypes = expenseTypes,
                                 expense = item.name,
                                 amount = item.amount,
@@ -269,132 +312,93 @@ fun AddExpenseScreenContent(
                                     Timber.d("onSaved : $editableItemList")
                                 },
                             )
-                        } else {
-                            SwipeableItemWithActions(
-                                isRevealed = item.isOptionsRevealed,
-                                onExpanded = {
-                                    editableItemList[index] = item.copy(isOptionsRevealed = true)
-                                },
-                                onCollapsed = {
-                                    editableItemList[index] = item.copy(isOptionsRevealed = false)
-                                },
-                                actions = {
-                                    IconButton(
-                                        onClick = {
-                                            editableItemList.remove(item)
-                                        },
-                                        modifier =
-                                            Modifier
-                                                .clip(CircleShape)
-                                                .background(Color.Red),
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            tint = Color.White,
-                                        )
-                                    }
-                                },
-                            ) {
-                                SingleExpenseItem(
-                                    expenseTypes = expenseTypes,
-                                    expense = item.name,
-                                    amount = item.amount,
-                                    showErrorSnackbar = showErrorSnackbar,
-                                    onSave = { name, amount ->
-                                        if (editableItemList.map { it.name }.contains(name)) {
-                                            editableItemList.removeIf { it.name == name }
-                                        }
-                                        editableItemList.add(ExpenseItem(name, amount))
-//                                        editableItems[name] = amount
-                                        Timber.d("onSaved : $editableItemList")
-                                    },
-                                )
-                            }
                         }
                     }
                 }
 
-                if (editableItemList.size > 1) {
-                    Row(
+                item {
+
+                    if (editableItemList.size > 1) {
+                        Row(
+                            modifier =
+                                Modifier
+                                    .padding(24.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                        shape = OutlinedTextFieldDefaults.shape,
+                                    )
+                                    .fillMaxWidth(),
+                        ) {
+                            Text(
+                                "Total",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier =
+                                    Modifier
+                                        .padding(8.dp)
+                                        .weight(1f),
+                            )
+                            Text(
+                                "${
+                                    editableItemList.filter { it.amount != null }
+                                        .sumOf { it.amount!! }
+                                }",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.End,
+                                modifier =
+                                    Modifier
+                                        .padding(8.dp)
+                                        .weight(1f),
+                            )
+                        }
+                    }
+
+                    OutlinedTextField(
+                        value = editableExpense.value.notes ?: "",
+                        onValueChange = {
+                            editableExpense.value =
+                                editableExpense.value.copy(notes = it)
+                        },
                         modifier =
                             Modifier
-                                .padding(24.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                                    shape = OutlinedTextFieldDefaults.shape,
-                                )
-                                .fillMaxWidth(),
-                    ) {
-                        Text(
-                            "Total",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier =
-                                Modifier
-                                    .padding(8.dp)
-                                    .weight(1f),
-                        )
-                        Text(
-                            "${
-                                editableItemList.filter { it.amount != null }.sumOf { it.amount!! }
-                            }",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.End,
-                            modifier =
-                                Modifier
-                                    .padding(8.dp)
-                                    .weight(1f),
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                        label = { Text("Details") },
+                        minLines = 2,
+                        readOnly = !editAllowed,
+                    )
+                    Spacer(Modifier.size(16.dp))
+                    if (editAllowed) {
+                        StandardButton(
+                            label = R.string.submit,
+                            onButtonClick = {
+                                Timber.i("Saving Expense: ${editableExpense.value}")
+                                Timber.i("EditableItemList: $editableItemList")
+
+                                if (editableExpense.value.expenseMonth == null ||
+                                    editableExpense.value.expenseYear == null ||
+                                    editableItemList.size < 2
+                                ) {
+                                    Timber.w("Validation failed: Not all fields are filled")
+                                    showErrorSnackbar(ErrorMessage.StringError("Please fill all the fields"))
+                                } else {
+                                    Timber.i("Validation successful, saving Expense: ${editableExpense.value}")
+                                    val finalExpenses =
+                                        editableItemList.filter { it.amount != null }
+                                            .associate { it.name to it.amount!! }
+                                    saveExpense(
+                                        editableExpense.value.copy(expenses = finalExpenses),
+                                        showErrorSnackbar,
+                                    )
+                                }
+                            },
                         )
                     }
                 }
 
-                OutlinedTextField(
-                    value = editableExpense.value.notes ?: "",
-                    onValueChange = {
-                        editableExpense.value =
-                            editableExpense.value.copy(notes = it)
-                    },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text("Details") },
-                    minLines = 2,
-                    readOnly = !editAllowed,
-                )
 
-                Spacer(Modifier.size(16.dp))
-
-                if (editAllowed) {
-                    StandardButton(
-                        label = R.string.submit,
-                        onButtonClick = {
-                            Timber.i("Saving Expense: ${editableExpense.value}")
-                            Timber.i("EditableItemList: $editableItemList")
-
-                            if (editableExpense.value.expenseMonth == null ||
-                                editableExpense.value.expenseYear == null ||
-                                editableItemList.size < 2
-                            ) {
-                                Timber.w("Validation failed: Not all fields are filled")
-                                showErrorSnackbar(ErrorMessage.StringError("Please fill all the fields"))
-                            } else {
-                                Timber.i("Validation successful, saving Expense: ${editableExpense.value}")
-                                val finalExpenses =
-                                    editableItemList.filter { it.amount != null }
-                                        .associate { it.name to it.amount!! }
-                                saveExpense(
-                                    editableExpense.value.copy(expenses = finalExpenses),
-                                    showErrorSnackbar,
-                                )
-                            }
-                        },
-                    )
-                }
             }
         }
     }
